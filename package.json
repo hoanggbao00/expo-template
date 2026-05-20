@@ -1,20 +1,17 @@
 {
   "name": "expo-template",
-  "main": "expo-router/entry",
   "version": "1.0.0",
-  "scripts": {
-    "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
-  },
+  "versionCode": 1,
+  "private": true,
+  "main": "index.js",
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.1.33",
+    "clsx": "^2.1.1",
     "expo": "~55.0.25",
+    "expo-build-properties": "^55.0.14",
     "expo-constants": "~55.0.16",
     "expo-device": "~55.0.17",
     "expo-font": "~55.0.8",
@@ -27,19 +24,45 @@
     "expo-symbols": "~55.0.9",
     "expo-system-ui": "~55.0.18",
     "expo-web-browser": "~55.0.16",
+    "pressto": "^0.6.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-native": "0.83.6",
-    "react-native-gesture-handler": "~2.30.0",
-    "react-native-worklets": "0.7.4",
+    "react-native-ease": "^0.7.2",
+    "react-native-gesture-handler": "~2.31.2",
+    "react-native-keyboard-controller": "^1.21.7",
+    "react-native-mmkv": "^4.3.1",
+    "react-native-nano-icons": "^0.1.8",
+    "react-native-nitro-fetch": "^1.3.0",
+    "react-native-nitro-modules": "^0.35.7",
     "react-native-reanimated": "4.2.1",
-    "react-native-safe-area-context": "~5.6.2",
-    "react-native-screens": "~4.23.0",
-    "react-native-web": "~0.21.0"
+    "react-native-safe-area-context": "~5.8.0",
+    "react-native-screens": "~4.25.1",
+    "react-native-web": "~0.21.0",
+    "react-native-worklets": "0.7.4",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0",
+    "uniwind": "^1.6.5",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.15",
     "@types/react": "~19.2.2",
-    "typescript": "~5.9.2"
+    "@typescript/native-preview": "^7.0.0-dev.20260519.1",
+    "lefthook": "^2.1.8",
+    "typescript": "~5.9.2",
+    "ultracite": "7.7.0"
   },
-  "private": true
+  "scripts": {
+    "start": "expo start",
+    "prebuild:android": "expo prebuild --platform android",
+    "prebuild:ios": "expo prebuild --platform ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "typecheck": "bun tsgo --noEmit -p tsconfig.json",
+    "prepare": "lefthook install"
+  }
 }
