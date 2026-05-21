@@ -1,1 +1,11 @@
-{ "recommendations": ["expo.vscode-expo-tools"] }
+{
+  "recommendations": [
+    "expo.vscode-expo-tools",
+    "biomejs.biome",
+    "streetsidesoftware.code-spell-checker",
+    "bradlc.vscode-tailwindcss",
+    "lokalise.i18n-ally",
+    "BriteSnow.vscode-toggle-quotes",
+    "EditorConfig.EditorConfig"
+  ]
+}

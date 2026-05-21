@@ -41,3 +41,9 @@ app-example
 # generated native folders
 /ios
 /android
+
+# generated files
+release.keystore
+*.apk
+*.aab
+*.ipa
