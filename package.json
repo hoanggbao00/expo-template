@@ -4,6 +4,19 @@
   "versionCode": 1,
   "private": true,
   "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "prebuild:android": "expo prebuild --platform android",
+    "prebuild:ios": "expo prebuild --platform ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "typecheck": "bun tsgo --noEmit -p tsconfig.json",
+    "prepare": "lefthook install",
+    "build:apk": "./scripts/build-android.sh --apk",
+    "build:aab": "./scripts/build-android.sh --aab"
+  },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
     "@react-navigation/bottom-tabs": "^7.15.5",
@@ -18,15 +31,16 @@
     "expo-glass-effect": "~55.0.11",
     "expo-image": "~55.0.10",
     "expo-linking": "~55.0.15",
+    "expo-localization": "^55.0.15",
     "expo-router": "~55.0.15",
     "expo-splash-screen": "~55.0.21",
     "expo-status-bar": "~55.0.6",
-    "expo-symbols": "~55.0.9",
     "expo-system-ui": "~55.0.18",
-    "expo-web-browser": "~55.0.16",
+    "i18next": "^26.2.0",
     "pressto": "^0.6.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-i18next": "^17.0.8",
     "react-native": "0.83.6",
     "react-native-ease": "^0.7.2",
     "react-native-gesture-handler": "~2.31.2",
@@ -35,11 +49,10 @@
     "react-native-nano-icons": "^0.1.8",
     "react-native-nitro-fetch": "^1.3.0",
     "react-native-nitro-modules": "^0.35.7",
-    "react-native-reanimated": "4.2.1",
+    "react-native-reanimated": "4.3.1",
     "react-native-safe-area-context": "~5.8.0",
     "react-native-screens": "~4.25.1",
-    "react-native-web": "~0.21.0",
-    "react-native-worklets": "0.7.4",
+    "react-native-worklets": "0.8.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
     "uniwind": "^1.6.5",
@@ -53,16 +66,16 @@
     "typescript": "~5.9.2",
     "ultracite": "7.7.0"
   },
-  "scripts": {
-    "start": "expo start",
-    "prebuild:android": "expo prebuild --platform android",
-    "prebuild:ios": "expo prebuild --platform ios",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "check": "ultracite check",
-    "fix": "ultracite fix",
-    "typecheck": "bun tsgo --noEmit -p tsconfig.json",
-    "prepare": "lefthook install"
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-gesture-handler",
+        "react-native-keyboard-controller",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-worklets",
+        "react-native-reanimated"
+      ]
+    }
   }
 }

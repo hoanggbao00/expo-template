@@ -1,8 +1,11 @@
 import { Icon, PressableScale, SafeAreaView, TextUI, View } from "@/components/tw";
 import { Spinner } from "@/components/ui/spinner";
+import { useAppTranslation } from "@/i18n/use-app-translation";
 import { wpx } from "@/utils";
 
 export default function Index() {
+  const { t } = useAppTranslation("home");
+
   return (
     <SafeAreaView className="flex-1 flex-center bg-background-secondary">
       <View className="w-full items-start" style={{ paddingHorizontal: wpx(16) }}>
@@ -11,7 +14,7 @@ export default function Index() {
         </PressableScale>
       </View>
       <View className="w-full flex-1 flex-center gap-2">
-        <TextUI>Edit src/app/index.tsx to edit this screen.</TextUI>
+        <TextUI>{t("title")}</TextUI>
         <Spinner />
       </View>
     </SafeAreaView>

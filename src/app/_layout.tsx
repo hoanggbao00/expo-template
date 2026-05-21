@@ -1,8 +1,7 @@
-import FontProvider from "@/providers/font-provider";
-import ThemeProvider from "@/providers/theme-provider";
+import "@@/global.css";
 import { Stack } from "expo-router";
-import "../../global.css";
 
+import { Providers } from "@/providers/providers";
 import * as SplashScreen from "expo-splash-screen";
 
 // Default error boundary
@@ -13,10 +12,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
-    <FontProvider>
-      <ThemeProvider>
-        <Stack screenOptions={{ headerShown: false }} />
-      </ThemeProvider>
-    </FontProvider>
+    <Providers>
+      <Stack screenOptions={{ headerShown: false }} />
+    </Providers>
   );
 }
