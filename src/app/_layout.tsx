@@ -1,8 +1,9 @@
 import "@@/global.css";
-import { Stack } from "expo-router";
 
 import { Providers } from "@/providers/providers";
 import * as SplashScreen from "expo-splash-screen";
+import { AnimatedSplashOverlay } from "@/components/animated-icon";
+import AppTabs from "@/components/app-tabs";
 
 // Default error boundary
 export { ErrorBoundary } from "expo-router";
@@ -12,8 +13,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
-    <Providers>
-      <Stack screenOptions={{ headerShown: false }} />
-    </Providers>
+    <>
+      <AnimatedSplashOverlay />
+      <Providers>
+        <AppTabs />
+      </Providers>
+    </>
   );
 }

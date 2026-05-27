@@ -14,7 +14,7 @@ const expoConfig: ExpoConfig = {
   slug: APP_SLUG,
   version: VERSION_NAME,
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/icon-app/icon.png",
   scheme: APP_SCHEME,
   userInterfaceStyle: "automatic",
   ios: {
@@ -45,6 +45,10 @@ const expoConfig: ExpoConfig = {
         },
       },
     ],
+    "expo-font",
+    "expo-image",
+    "expo-localization",
+    "expo-status-bar",
     "expo-router",
     [
       "expo-splash-screen",
