@@ -1,0 +1,27 @@
+{
+  "name": "@addons/notify",
+  "private": true,
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "react-native-notify-kit": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "typescript": "catalog:",
+    "@packages/tsconfig": "workspace:*",
+    "@packages/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "expo": "catalog:expo-56",
+    "react": "catalog:",
+    "react-native": "catalog:",
+    "@react-native-firebase/app": "catalog:",
+    "@react-native-firebase/messaging": "catalog:",
+    "expo-constants": "catalog:expo-56"
+  }
+}

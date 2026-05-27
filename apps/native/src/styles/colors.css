@@ -1,0 +1,66 @@
+/**
+ * Ref: https://v3.heroui.com/docs/native/getting-started/colors#customizing-colors
+ * After add a custom color, you need to add it to the ThemeColor type in `colors.type.ts` file.
+ * To work with useThemeColor hook
+ */
+
+@layer theme {
+  @variant light {
+    /* Override default colors */
+    --background: #f9fafc;
+    --background-secondary: #eef1f5;
+
+    --text-primary: #111728;
+    --text-secondary: #4b5563;
+    --text-disabled: #99a1af;
+
+    /* Custom color */
+    --action: #2c7fff;
+    --primary-inverse: #111728;
+
+    --icon-primary: #111728;
+    --icon-disabled: #99a1af;
+
+    --semantic-yellow: #fbc02d;
+    --semantic-red: #e33535;
+  }
+
+  @variant dark {
+    /* Override default colors */
+    --background: #111728;
+    --background-secondary: #1e2939;
+
+    --text-primary: #f9fafc;
+    --text-secondary: #d0d5dc;
+    --text-disabled: #99a1af;
+
+    /* Custom color */
+    --action: #2c7fff;
+    --primary-inverse: #f9fafc;
+
+    --icon-primary: #f9fafc;
+    --icon-disabled: #99a1af;
+
+    --semantic-yellow: #fbc02d;
+    --semantic-red: #e33535;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-disabled: var(--text-disabled);
+
+  /* Custom color */
+  --color-action: var(--action);
+  --color-primary-inverse: var(--primary-inverse);
+
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-disabled: var(--icon-disabled);
+
+  --color-semantic-yellow: var(--semantic-yellow);
+  --color-semantic-red: var(--semantic-red);
+}

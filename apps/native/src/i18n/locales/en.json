@@ -1,0 +1,78 @@
+{
+  "common": {
+    "apply": "Apply",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "done": "Done",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "language": "Language",
+    "language_changed": "Language changed",
+    "do_you_want_to_disconnect": "Do you want to disconnect?",
+    "no": "No",
+    "disconnect": "Disconnect",
+    "no_internet_connection": "No internet connection",
+    "retry": "Retry"
+  },
+  "onboarding": {
+    "select_language": "Select Language",
+    "apply": "Apply",
+    "step1_title": "Safe and Secured",
+    "step1_description": "Military-Grade Encryption",
+    "step2_title": "Global Server Coverage",
+    "step2_description": "Supports over 1 million servers worldwide.",
+    "step3_title": "24/7 Customer Support",
+    "step3_description": "Caring help whenever you need."
+  },
+  "home": {
+    "welcome": "Welcome to",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "connecting": "Connecting...",
+    "select_server": "Select Server",
+    "server_location": "Server Location",
+    "connection_status": "Connection Status",
+    "tap_connect": "TAP CONNECT",
+    "tap_disconnect": "TAP DISCONNECT",
+    "data_remain": "Data remain: ",
+    "status": "Status: ",
+    "change_server": "Change Server"
+  },
+  "errors": {
+    "unknown": "Something went wrong",
+    "network": "Network error. Please try again.",
+    "timeout": "Request timed out. Please try again.",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "not_found": "Not found"
+  },
+  "setting": {
+    "page_title": "Setting",
+    "language": "Language",
+    "share_app": "Share App",
+    "rate_app": "Rate App",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "contact_support": "Contact Support"
+  },
+  "server": {
+    "game_server": "Game Server",
+    "website_server": "Website Server",
+    "video_server": "Video Server",
+    "change_server": "Change Server",
+    "tap_connect_fastest_server": "Tap & Auto Connect Fastest Server"
+  },
+  "location": {
+    "page_title": "Location",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "city": "City",
+    "region": "Region",
+    "country": "Country"
+  }
+}

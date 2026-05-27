@@ -1,0 +1,25 @@
+
+
+# generated native folders
+/android
+/ios
+
+# generated expo
+.expo/
+expo-env.d.ts
+
+# generated files for uniwind
+uniwind-types.d.ts
+
+# build files
+*.apk
+*.aab
+
+# env
+.env*.local
+
+# keystore file
+release.keystore
+
+# generated icons
+assets/icons/output/

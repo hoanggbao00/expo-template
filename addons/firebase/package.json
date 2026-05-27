@@ -1,0 +1,21 @@
+{
+  "name": "@addons/firebase",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "exports": {
+    "./messaging": "./src/messaging/index.ts"
+  },
+  "dependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@packages/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@typescript/native-preview": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "@react-native-firebase/app": "catalog:",
+    "@react-native-firebase/messaging": "catalog:"
+  }
+}

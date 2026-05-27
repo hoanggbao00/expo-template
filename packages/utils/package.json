@@ -1,0 +1,26 @@
+{
+  "name": "@packages/utils",
+  "private": true,
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "expo-constants": "catalog:expo-56",
+    "tailwind-merge": "^3.6.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./cn": "./src/cn.ts",
+    "./dev-log": "./src/dev-log.ts"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "typescript": "catalog:",
+    "@packages/tsconfig": "workspace:*"
+  },
+  "peerDependencies": {
+    "expo": "catalog:expo-56",
+    "react": "catalog:",
+    "react-native": "catalog:"
+  }
+}

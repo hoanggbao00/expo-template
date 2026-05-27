@@ -1,0 +1,76 @@
+{
+  "name": "native",
+  "private": true,
+  "main": "index.js",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "typecheck": "bun tsgo --noEmit",
+    "build:apk": "./scripts/build-android.sh --apk",
+    "build:aab": "./scripts/build-android.sh --aab",
+    "prebuild:all": "expo prebuild",
+    "prebuild:android": "expo prebuild --platform android",
+    "prebuild:ios": "expo prebuild --platform ios",
+    "atlas": "EXPO_ATLAS=true bun expo export --platform android && bun expo-atlas .expo/atlas.jsonl"
+  },
+  "dependencies": {
+    "@expo-google-fonts/montserrat": "^0.4.2",
+    "@react-navigation/elements": "catalog:native",
+    "@react-navigation/native": "catalog:native",
+    "@tanstack/react-query": "^5.100.14",
+    "babel-preset-expo": "catalog:expo-56",
+    "expo": "catalog:expo-56",
+    "expo-application": "catalog:expo-56",
+    "expo-build-properties": "catalog:expo-56",
+    "expo-constants": "catalog:expo-56",
+    "expo-font": "catalog:expo-56",
+    "expo-haptics": "catalog:expo-56",
+    "expo-image": "catalog:expo-56",
+    "expo-linking": "catalog:expo-56",
+    "expo-localization": "catalog:expo-56",
+    "expo-router": "catalog:expo-56",
+    "expo-splash-screen": "catalog:expo-56",
+    "expo-status-bar": "catalog:expo-56",
+    "expo-system-ui": "catalog:expo-56",
+    "i18next": "^25.8.18",
+    "pressto": "^0.6.1",
+    "react": "catalog:",
+    "react-i18next": "^17.0.8",
+    "react-native": "catalog:",
+    "react-native-ease": "^0.7.2",
+    "react-native-gesture-handler": "catalog:native",
+    "react-native-keyboard-controller": "catalog:native",
+    "react-native-mmkv": "catalog:native",
+    "react-native-modal": "^14.0.0-rc.1",
+    "react-native-nano-icons": "^0.1.8",
+    "react-native-nitro-modules": "catalog:native",
+    "react-native-pager-view": "^8.0.1",
+    "react-native-reanimated": "catalog:native",
+    "react-native-safe-area-context": "catalog:native",
+    "react-native-screens": "catalog:native",
+    "react-native-worklets": "catalog:native",
+    "tailwindcss": "^4.2.1",
+    "uniwind": "^1.7.0",
+    "zustand": "catalog:",
+    "@packages/utils": "workspace:*",
+    "@packages/ui-kit": "workspace:*"
+  },
+  "devDependencies": {
+    "@sentry/cli": "^3.4.0",
+    "@types/react": "catalog:",
+    "expo-atlas": "^0.4.3",
+    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-safe-area-context",
+        "react-native-keyboard-controller"
+      ]
+    }
+  }
+}

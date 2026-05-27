@@ -1,0 +1,6 @@
+@theme inline {
+  --font-bold: "Inter_700Bold";
+  --font-semibold: "Inter_600SemiBold";
+  --font-medium: "Inter_500Medium";
+  --font-regular: "Inter_400Regular";
+}

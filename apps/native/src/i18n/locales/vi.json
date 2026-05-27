@@ -1,0 +1,78 @@
+{
+  "common": {
+    "apply": "Áp dụng",
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "skip": "Bỏ qua",
+    "done": "Bắt đầu ngay",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "language": "Ngôn ngữ",
+    "language_changed": "Ngôn ngữ đã thay đổi",
+    "do_you_want_to_disconnect": "Bạn có muốn ngắt kết nối không?",
+    "no": "Không",
+    "disconnect": "Ngắt kết nối",
+    "no_internet_connection": "Không có kết nối internet",
+    "retry": "Thử lại"
+  },
+  "onboarding": {
+    "select_language": "Chọn ngôn ngữ",
+    "apply": "Áp dụng",
+    "step1_title": "Bảo mật và an toàn",
+    "step1_description": "Bảo mật mạnh mẽ theo tiêu chuẩn quân sự.",
+    "step2_title": "Phủ sóng toàn cầu",
+    "step2_description": "Hỗ trợ hơn 1 triệu máy chủ trên toàn thế giới.",
+    "step3_title": "Hỗ trợ 24/7",
+    "step3_description": "Hỗ trợ nhiệt tình khi bạn cần."
+  },
+  "home": {
+    "welcome": "Chào mừng đến với",
+    "connect": "Kết nối",
+    "disconnect": "Ngắt kết nối",
+    "connected": "Đã kết nối",
+    "disconnected": "Đã ngắt kết nối",
+    "connecting": "Đang kết nối...",
+    "select_server": "Chọn máy chủ",
+    "server_location": "Vị trí máy chủ",
+    "connection_status": "Trạng thái kết nối",
+    "tap_connect": "CHẠM KẾT NỐI",
+    "tap_disconnect": "NGẮT KẾT NỐI",
+    "data_remain": "Dữ liệu còn lại: ",
+    "status": "Trạng thái: ",
+    "change_server": "Thay đổi máy chủ"
+  },
+  "errors": {
+    "unknown": "Đã xảy ra lỗi",
+    "network": "Lỗi mạng. Vui lòng thử lại.",
+    "timeout": "Quá thời gian. Vui lòng thử lại.",
+    "unauthorized": "Không có quyền truy cập",
+    "forbidden": "Bị cấm",
+    "not_found": "Không tìm thấy"
+  },
+  "setting": {
+    "page_title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "share_app": "Chia sẻ ứng dụng",
+    "rate_app": "Đánh giá",
+    "privacy_policy": "Chính sách riêng tư",
+    "terms_of_service": "Điều khoản dịch vụ",
+    "contact_support": "Liên hệ hỗ trợ"
+  },
+  "server": {
+    "game_server": "Máy Chủ Game",
+    "website_server": "Máy Chủ Website",
+    "video_server": "Máy Chủ Video",
+    "change_server": "Thay đổi Máy Chủ",
+    "tap_connect_fastest_server": "Chạm & Tự Động Kết Nối Máy Chủ Tốt Nhất"
+  },
+  "location": {
+    "page_title": "Vị trí",
+    "latitude": "Vĩ độ",
+    "longitude": "Kinh độ",
+    "city": "Thành phố",
+    "region": "Khu vực",
+    "country": "Quốc gia"
+  }
+}

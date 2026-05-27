@@ -1,0 +1,11 @@
+{
+  "name": "@packages/tsconfig",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.addon.json": "./tsconfig.addon.json",
+    "./tsconfig.react-native.json": "./tsconfig.react-native.json"
+  }
+}

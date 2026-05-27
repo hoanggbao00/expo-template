@@ -1,0 +1,27 @@
+{
+  "name": "@packages/ui-kit",
+  "private": true,
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@expo/ui": "catalog:expo-56",
+    "sonner-native": "^0.25.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./toast-native": "./src/components/toast.native.tsx"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "typescript": "catalog:",
+    "@packages/tsconfig": "workspace:*"
+  },
+  "peerDependencies": {
+    "react-native-gesture-handler": "catalog:native",
+    "react-native-reanimated": "catalog:native",
+    "react-native-worklets": "catalog:native",
+    "react-native-safe-area-context": "catalog:native",
+    "react-native-svg": "catalog:native",
+    "expo-blur": "catalog:expo-56"
+  }
+}

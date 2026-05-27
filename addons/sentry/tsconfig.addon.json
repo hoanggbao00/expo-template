@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@packages/tsconfig/tsconfig.addon.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "types": ["node"],
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/config.ts"]
+}
