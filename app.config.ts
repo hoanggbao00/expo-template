@@ -41,7 +41,7 @@ const expoConfig: ExpoConfig = {
           compileSdkVersion: 36,
           targetSdkVersion: 36,
           minSdkVersion: 28, // Android 9
-          buildArchs: ["arm64-v8a"]
+          buildArchs: ["arm64-v8a"],
         },
       },
     ],
