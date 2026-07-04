@@ -71,10 +71,33 @@ Use `--no-clean` to patch existing native folders instead.
 After upgrading the SDK, delete stale `android/` / `ios/` and re-run prebuild or
 `bun run android` / `bun run ios` so native code matches the new SDK.
 
+## Worklets bundle mode
+
+This template enables [worklets bundle mode](https://docs.swmansion.com/react-native-worklets/docs/bundleMode)
+to lower Android memory use with Hermes V1 + Reanimated (see [SDK 57 known regression](https://expo.dev/changelog/sdk-57)).
+
+Configuration:
+
+- `babel.config.js` — `react-native-worklets/plugin` with `bundleMode: true`
+- `metro.config.js` — `getBundleModeMetroConfig()` applied **after** `withUniwindConfig()`
+
+## Patches (`patches/`)
+
+Bun applies these automatically on `bun install` via `patchedDependencies` in `package.json`.
+
+| Package | Why |
+|---------|-----|
+| `react-native-worklets@0.10.1` | Fixes infinite `NativeModules` recursion / stuck splash when bundle mode runs alongside uniwind’s `react-native` resolver remap ([reanimated#9817](https://github.com/software-mansion/react-native-reanimated/issues/9817)) |
+| `metro@0.84.4` | Stable SHA-1 for generated `.worklets/` modules |
+| `metro-runtime@0.84.4` | HMR propagation + `metroRequire.getModules` for bundle mode |
+
+If you upgrade `react-native-worklets`, `metro`, or `uniwind`, re-test the app and
+refresh patches if needed (`bun patch <package>`).
+
 ## Upgrading
 
 ```bash
-npx expo install expo@^57.0.0 --fix
+bunx expo install expo@^57.0.0 --fix
 bunx expo-doctor
 ```
 

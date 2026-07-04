@@ -1,0 +1,106 @@
+# Fixes infinite NativeModules recursion / stuck splash screen when Bundle Mode
+# is combined with a resolver that remaps 'react-native' (e.g. uniwind).
+# Ref: https://github.com/software-mansion/react-native-reanimated/issues/9817
+diff --git a/node_modules/react-native-worklets/.bun-tag-257bb71a8f7d0579 b/.bun-tag-257bb71a8f7d0579
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/react-native-worklets/.bun-tag-3674ab09edde85f9 b/.bun-tag-3674ab09edde85f9
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/bundleMode/index.js b/bundleMode/index.js
+index 9a1b692f81b0c61c3fef22ef756c5392b483846c..3c3813d8fc1571423677a847fcbfb4cf459f7908 100644
+--- a/bundleMode/index.js
++++ b/bundleMode/index.js
+@@ -25,6 +25,11 @@ function isResolvedTurboModuleRegistry(/** @type {any} */ result) {
+ }
+ 
+ const workletsPackageName = 'react-native-worklets';
++const realReactNativeModuleName = path.posix.join(
++  workletsPackageName,
++  'bundleMode',
++  'realReactNative'
++);
+ const workletsDirPath = path.posix.join(workletsPackageName, '.worklets');
+ const workletsSrcEntryPath = path.posix.join(
+   workletsPackageName,
+@@ -42,12 +47,20 @@ function bundleModeResolveRequest(
+   /** @type {any} */ context,
+   /** @type {string} */ moduleName,
+   /** @type {any} */ platform,
+-  /** @type {any} */ userConfigResolveRequest
++  /** @type {any} */ userConfigResolveRequest,
++  /** @type {string} */ realReactNativePath
+ ) {
+   if (moduleName.startsWith(workletsDirPath)) {
+     const fullModuleName = path.join(workletsPackageParentDir, moduleName);
+     return { type: 'sourceFile', filePath: fullModuleName };
+   }
++  // The react-native shim requires the real react-native through this internal
++  // sentinel specifier instead of the bare 'react-native' specifier, so that
++  // resolvers which remap 'react-native' (e.g. uniwind -> uniwind/components)
++  // cannot intercept it and form a shim <-> replacement require cycle.
++  if (moduleName === realReactNativeModuleName) {
++    return { type: 'sourceFile', filePath: realReactNativePath };
++  }
+   if (
+     moduleName === 'react-native' &&
+     context.originModulePath !== reactNativeShimPath
+@@ -74,6 +87,11 @@ function bundleModeResolveRequest(
+   return resolved;
+ }
+ 
++const realReactNativePathForCommunityConfig = require.resolve(
++  'react-native',
++  { paths: [process.cwd()] }
++);
++
+ /** Use in React Native Community projects. */
+ const bundleModeMetroConfig = {
+   serializer: {
+@@ -89,6 +107,12 @@ const bundleModeMetroConfig = {
+         const fullModuleName = path.join(workletsPackageParentDir, moduleName);
+         return { type: 'sourceFile', filePath: fullModuleName };
+       }
++      if (moduleName === realReactNativeModuleName) {
++        return {
++          type: 'sourceFile',
++          filePath: realReactNativePathForCommunityConfig,
++        };
++      }
+       if (
+         moduleName === 'react-native' &&
+         context.originModulePath !== reactNativeShimPath
+@@ -118,6 +142,10 @@ const bundleModeMetroConfig = {
+ function getBundleModeMetroConfig(/** @type {any} */ config) {
+   config.serializer.createModuleIdFactory = bundleModeCreateModuleIdFactory;
+ 
++  const realReactNativePath = require.resolve('react-native', {
++    paths: [config.projectRoot || process.cwd()],
++  });
++
+   const currentResolveRequest = config?.resolver?.resolveRequest;
+   config.resolver.resolveRequest = (
+     /** @type {any} */ context,
+@@ -128,7 +156,8 @@ function getBundleModeMetroConfig(/** @type {any} */ config) {
+       context,
+       moduleName,
+       platform,
+-      currentResolveRequest
++      currentResolveRequest,
++      realReactNativePath
+     );
+ 
+   const currentGetTransformOptions = config?.transformer?.getTransformOptions;
+diff --git a/bundleMode/shims/reactNativeShim.js b/bundleMode/shims/reactNativeShim.js
+index c711083ce54249f48e60f392ddd832a856eba039..4ae01f807e48dd0205a9e29815c752f2775dcb8c 100644
+--- a/bundleMode/shims/reactNativeShim.js
++++ b/bundleMode/shims/reactNativeShim.js
+@@ -18,4 +18,7 @@ if (
+   );
+ }
+ 
+-module.exports = require('react-native');
++// Sentinel specifier, not the bare 'react-native', to avoid a shim<->resolver
++// require cycle with resolvers that remap 'react-native' (e.g. uniwind).
++module.exports = require('react-native-worklets/bundleMode/realReactNative');
++

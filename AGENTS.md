@@ -17,8 +17,9 @@ rely on memory of older Expo APIs.
 - **Styling**: `uniwind` (Tailwind CSS v4 for React Native). NOT NativeWind.
 - **State**: `zustand` + `persist` middleware, persisted to **MMKV** (`react-native-mmkv`).
 - **i18n**: `i18next` + `react-i18next` with a typed wrapper hook.
-- **Icons**: `react-native-nano-icons` (glyph set auto-generated at build).
-- **Animation**: `react-native-reanimated` v4, `react-native-worklets`, `react-native-ease`, `pressto`.
+- **Icons**: `react-native-nano-icons` (glyph set auto-generated at prebuild).
+- **Animation**: `react-native-reanimated` v4, `react-native-worklets` (**bundle mode** on),
+  `react-native-ease`, `pressto`.
 - **Networking**: `react-native-nitro-fetch` (re-exported as `nitroFetch` in `src/lib/nitro-fetch.ts`).
 - **Lint/format**: `ultracite` (Biome-based). **Typecheck**: `tsgo` (TypeScript native preview).
 - **Package manager**: **bun** (`bun.lock`). Use `bun` / `bun x`, not npm/yarn.
@@ -42,6 +43,22 @@ bun run build:apk | build:aab   # ./scripts/build-android.sh
 
 A `lefthook` pre-commit hook runs `bun x ultracite fix` on staged JS/TS/JSON/CSS files.
 Always make sure `bun run check` and `bun run typecheck` pass before finishing.
+
+## Metro, Babel & patches
+
+Worklets **bundle mode** is enabled (`babel.config.js`, `metro.config.js`). Required for
+Android memory with Hermes V1 + Reanimated on SDK 57.
+
+- `babel.config.js` — `babel-preset-expo` has `worklets: false, reanimated: false`; the
+  worklets plugin is applied once with `bundleMode: true`. Do not re-enable the preset defaults.
+- `metro.config.js` — `withUniwindConfig()` first, then `getBundleModeMetroConfig()` **last**.
+  Never swap that order.
+- `patches/` — bun `patchedDependencies` fix uniwind + bundle mode integration and Metro
+  support for `.worklets/` modules. Do not remove patches or upgrade `react-native-worklets`,
+  `metro`, or `uniwind` without re-testing splash/HMR. Refresh with `bun patch <package>`.
+
+`package.json` → `expo.install.exclude` pins versions for gesture-handler, reanimated,
+worklets, screens, and keyboard-controller — keep those entries when running `expo install --fix`.
 
 ## Project Structure
 
@@ -80,10 +97,10 @@ implement the screen under `src/features/<name>/screen.tsx`.
 
 - Use `className` on the uniwind components, not raw `react-native` primitives.
   Import from `@/components/tw`: `View`, `ScrollView`, `TextInput`, `Pressable`, `Image`,
-  `Link`, `SafeAreaView`, `KeyboardAvoidingView`, `GestureHandlerRootView`,
+  `SafeAreaView`, `KeyboardAvoidingView`, `GestureHandlerRootView`,
   `PressableScale`, `PressableOpacity`, `Icon`, `TextUI`.
 - Global CSS entry is `global.css` → imports `tailwindcss`, `uniwind`, and the files in
-  `src/styles/`. Uniwind type defs auto-generate at `src/uniwind-types.d.ts` (do not edit).
+  `src/styles/`. Uniwind type defs auto-generate at `uniwind-types.d.ts` (repo root; do not edit).
 - **Colors are CSS variables** in `src/styles/colors.css` (light/dark variants). When you
   add a color there, you MUST also add it to `ThemeColor` in `src/styles/colors.type.ts`
   so `useThemeColor(...)` stays typed. Read colors at runtime with `useThemeColor("text-primary")`.
@@ -126,7 +143,7 @@ From `@/utils` (`screen-utils.ts`): `nf` (font), `wpx`/`hpx` (px from 375×812 d
   `default export` for screens/providers/route files (matches existing files).
 - `console.*` is a **warn** — use `devLog` from `@/utils` for intentional dev logging.
 - `__DEV__` is a known global. Avoid disabled-by-config rules; don't reintroduce them.
-- Don't edit generated files: `src/uniwind-types.d.ts`, `assets/icons/output/*`, `android/` build output.
+- Don't edit generated files: `uniwind-types.d.ts`, `assets/icons/output/*`, `android/` build output.
 - Comments: explain WHY only. No narration comments.
 
 ## Adding Things — quick recipes

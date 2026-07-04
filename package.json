@@ -89,5 +89,10 @@
         ]
       }
     }
+  },
+  "patchedDependencies": {
+    "metro@0.84.4": "patches/metro@0.84.4.patch",
+    "metro-runtime@0.84.4": "patches/metro-runtime@0.84.4.patch",
+    "react-native-worklets@0.10.1": "patches/react-native-worklets@0.10.1.patch"
   }
 }

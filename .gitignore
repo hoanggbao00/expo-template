@@ -36,8 +36,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-app-example
-
 # generated native folders
 /ios
 /android
@@ -47,3 +45,6 @@ release.keystore
 *.apk
 *.aab
 *.ipa
+
+# uniwind generated types
+uniwind-types.d.ts

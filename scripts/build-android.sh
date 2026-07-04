@@ -116,7 +116,7 @@ echo -e "${GREEN}==========================================${NC}"
 echo -e "📂 Target Dir : ${CYAN}$ANDROID_DIR${NC}"
 echo -e "📦 Build Type : ${CYAN}$BUILD_FORMAT${NC}"
 echo -e "📄 Output     : $FINAL_FILENAME"
-echo -e "🧷 Sentry Rel : ${CYAN}$SENTRY_RELEASE${NC}"za
+echo -e "🧷 Sentry Rel : ${CYAN}$SENTRY_RELEASE${NC}"
 
 echo -e "${GREEN}==========================================${NC}"
 echo ""
