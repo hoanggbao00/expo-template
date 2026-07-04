@@ -1,0 +1,57 @@
+diff --git a/lib/commonjs/pressables/base.js b/lib/commonjs/pressables/base.js
+index 7a01311cb0a92c7f4106e98a84689902cfe0a8a3..dd61a2ae8aa77766186a6942434f64c7287f339f 100644
+--- a/lib/commonjs/pressables/base.js
++++ b/lib/commonjs/pressables/base.js
+@@ -186,11 +186,9 @@ const BasePressable = exports.BasePressable = /*#__PURE__*/_react.default.memo((
+     style: [rest?.style ?? {}, rAnimatedStyle, cursorStyle],
+     enabled: isEnabled,
+     onPress: onPressWrapper,
+-    onBegan: onPressInWrapper,
+-    onActivated: onPressInWrapper,
+-    onEnded: onPressOutWrapper,
+-    onFailed: onPressOutWrapper,
+-    onCancelled: onPressOutWrapper,
++    onBegin: onPressInWrapper,
++    onActivate: onPressInWrapper,
++    onFinalize: onPressOutWrapper,
+     exclusive: false,
+     children: renderedChildren
+   });
+diff --git a/lib/module/pressables/base.js b/lib/module/pressables/base.js
+index daeabb6df37e880571edeb426d0fdd62de6b5d41..ae6bd35e280fcb8f995ce07171a0777ebebe5063 100644
+--- a/lib/module/pressables/base.js
++++ b/lib/module/pressables/base.js
+@@ -181,11 +181,9 @@ const BasePressable = /*#__PURE__*/React.memo(({
+     style: [rest?.style ?? {}, rAnimatedStyle, cursorStyle],
+     enabled: isEnabled,
+     onPress: onPressWrapper,
+-    onBegan: onPressInWrapper,
+-    onActivated: onPressInWrapper,
+-    onEnded: onPressOutWrapper,
+-    onFailed: onPressOutWrapper,
+-    onCancelled: onPressOutWrapper,
++    onBegin: onPressInWrapper,
++    onActivate: onPressInWrapper,
++    onFinalize: onPressOutWrapper,
+     exclusive: false,
+     children: renderedChildren
+   });
+diff --git a/src/pressables/base.tsx b/src/pressables/base.tsx
+index b655d9f42ecff6ec329da70e7252a7b866ec15e7..99972e2dd726bf4d3a270120734ec9fc0a168a84 100644
+--- a/src/pressables/base.tsx
++++ b/src/pressables/base.tsx
+@@ -375,11 +375,9 @@ const BasePressable: React.FC<BasePressableProps> = React.memo(
+         style={[rest?.style ?? {}, rAnimatedStyle, cursorStyle]}
+         enabled={isEnabled}
+         onPress={onPressWrapper}
+-        onBegan={onPressInWrapper}
+-        onActivated={onPressInWrapper}
+-        onEnded={onPressOutWrapper}
+-        onFailed={onPressOutWrapper}
+-        onCancelled={onPressOutWrapper}
++        onBegin={onPressInWrapper}
++        onActivate={onPressInWrapper}
++        onFinalize={onPressOutWrapper}
+         exclusive={false}
+       >
+         {renderedChildren}
