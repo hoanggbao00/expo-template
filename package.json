@@ -84,7 +84,9 @@
     },
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "exclude": ["react-native-nitro-fetch"]
+        "exclude": [
+          "react-native-nitro-fetch"
+        ]
       }
     }
   }
