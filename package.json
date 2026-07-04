@@ -1,0 +1,91 @@
+{
+  "name": "expo-template",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "private": true,
+  "main": "index.js",
+  "author": {
+    "name": "hoanggbao",
+    "email": "hoanggbao00@gmail.com",
+    "url": "https://github.com/hoanggbao00"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "expo start",
+    "prebuild:android": "expo prebuild --platform android",
+    "prebuild:ios": "expo prebuild --platform ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "typecheck": "bun tsgo --noEmit -p tsconfig.json",
+    "prepare": "lefthook install",
+    "build:apk": "./scripts/build-android.sh --apk",
+    "build:aab": "./scripts/build-android.sh --aab",
+    "atlas": "EXPO_ATLAS=true bun expo export --platform android && bunx expo-atlas .expo/atlas.jsonl"
+  },
+  "dependencies": {
+    "@expo-google-fonts/nunito": "^0.4.2",
+    "@expo/ui": "~57.0.3",
+    "clsx": "^2.1.1",
+    "expo": "^57.0.2",
+    "expo-application": "~57.0.0",
+    "expo-build-properties": "~57.0.3",
+    "expo-constants": "~57.0.3",
+    "expo-device": "~57.0.0",
+    "expo-font": "~57.0.0",
+    "expo-glass-effect": "~57.0.0",
+    "expo-image": "~57.0.0",
+    "expo-linking": "~57.0.1",
+    "expo-localization": "~57.0.0",
+    "expo-router": "~57.0.3",
+    "expo-splash-screen": "~57.0.2",
+    "expo-status-bar": "~57.0.0",
+    "expo-system-ui": "~57.0.0",
+    "i18next": "^26.3.1",
+    "pressto": "^0.7.0",
+    "react": "19.2.3",
+    "react-i18next": "^17.0.8",
+    "react-native": "0.86.0",
+    "react-native-ease": "^0.7.3",
+    "react-native-gesture-handler": "~3.0.2",
+    "react-native-keyboard-controller": "^1.21.13",
+    "react-native-mmkv": "^4.3.2",
+    "react-native-nano-icons": "^0.2.1",
+    "react-native-nitro-fetch": "^1.4.2",
+    "react-native-nitro-modules": "^0.36.1",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.8.0",
+    "react-native-screens": "~4.25.2",
+    "react-native-worklets": "0.10.1",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.1",
+    "uniwind": "^1.10.0",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "@types/react": "~19.2.17",
+    "@typescript/native-preview": "^7.0.0-dev.20260619.1",
+    "lefthook": "^2.1.8",
+    "typescript": "~6.0.3",
+    "ultracite": "7.7.0"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-gesture-handler",
+        "react-native-keyboard-controller",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-worklets",
+        "react-native-reanimated"
+      ]
+    },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": ["react-native-nitro-fetch"]
+      }
+    }
+  }
+}
