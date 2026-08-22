@@ -6,19 +6,32 @@ const APP_SLUG = "my-app";
 const APP_BUNDLE_IDENTIFIER = "com.hoanggbao.myapp";
 const APP_SCHEME = "myapp"; // For deep linking open app myapp://
 
-const VERSION_CODE = packageJson.versionCode || 1;
-const VERSION_NAME = packageJson.version || "1.0.0";
+const AndroidVersionCode = packageJson.androidVersionCode || 1;
+const AndroidVersion = packageJson.androidVersion || "1.0.0";
+const IosVersion = packageJson.iosVersion || "1.0.0";
+const IosBuildNumber = packageJson.iosBuildNumber || 1;
 
 const expoConfig: ExpoConfig = {
   name: APP_NAME,
   slug: APP_SLUG,
-  version: VERSION_NAME,
+  version: AndroidVersion,
   orientation: "portrait",
   icon: "./assets/icon-app/icon.png",
   scheme: APP_SCHEME,
   userInterfaceStyle: "automatic",
   ios: {
     icon: "./assets/expo.icon",
+    version: IosVersion,
+    buildNumber: String(IosBuildNumber),
+    supportsTablet: true,
+    requireFullScreen: true, // The ui will be broken, didn't test it yet
+    bundleIdentifier: APP_BUNDLE_IDENTIFIER,
+    config: {
+      usesNonExemptEncryption: false,
+    },
+    infoPlist: {
+      CFBundleDisplayName: APP_NAME,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -29,7 +42,7 @@ const expoConfig: ExpoConfig = {
     },
     predictiveBackGestureEnabled: false,
     package: APP_BUNDLE_IDENTIFIER,
-    versionCode: VERSION_CODE,
+    versionCode: AndroidVersionCode,
   },
   plugins: [
     [
