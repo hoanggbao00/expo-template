@@ -55,9 +55,9 @@
     "react-native-nano-icons": "^0.2.1",
     "react-native-nitro-fetch": "^1.6.1",
     "react-native-nitro-modules": "^0.36.1",
-    "react-native-reanimated": "4.6.0",
+    "react-native-reanimated": "4.5.3",
     "react-native-safe-area-context": "~5.9.1",
-    "react-native-worklets": "0.12.1",
+    "react-native-worklets": "0.10.4",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.1",
     "uniwind": "1.10.0",
@@ -91,7 +91,7 @@
   "patchedDependencies": {
     "metro@0.84.4": "patches/metro@0.84.4.patch",
     "metro-runtime@0.84.4": "patches/metro-runtime@0.84.4.patch",
-    "react-native-worklets@0.12.1": "patches/react-native-worklets@0.12.1.patch",
+    "react-native-worklets@0.10.4": "patches/react-native-worklets@0.10.4.patch",
     "pressto@0.7.0": "patches/pressto@0.7.0.patch"
   }
 }
