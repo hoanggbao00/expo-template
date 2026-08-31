@@ -1,7 +1,9 @@
 import { updatePreferences, usePreferencesStore } from "@/state/persisted";
-import { devLog } from "@/utils/dev-log";
+import { createLogger } from "@/utils/logger";
 import { getDeviceId } from "@/utils/get-device-id";
 import { useEffect, useRef } from "react";
+
+const logger = createLogger("useInitDeviceId");
 
 export const useInitDeviceId = () => {
   const deviceId = usePreferencesStore((state) => state.preferences.deviceId);
@@ -19,7 +21,7 @@ export const useInitDeviceId = () => {
       if (newDeviceId) updatePreferences({ deviceId: newDeviceId });
     }
 
-    devLog.success(`[Device ID]: Device ID initialized: ${newDeviceId}`);
+    logger.success(`Device ID initialized: ${newDeviceId}`);
   };
 
   useEffect(() => {

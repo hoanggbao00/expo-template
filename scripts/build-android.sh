@@ -25,8 +25,6 @@ NC='\033[0m'
 # 1. CONFIGURATION
 # =========================================================
 # Keystore Configuration
-APP_NAME="MyApp"
-
 KEYSTORE_FILE_NAME="release.keystore"
 KEYSTORE_ALIAS="hoanggbao.alias"
 KEYSTORE_PASS="hoanggbao00"
@@ -44,26 +42,9 @@ APP_DIR="$ANDROID_DIR/app"
 SOURCE_KEYSTORE="$ROOT_DIR/$KEYSTORE_FILE_NAME"
 DEST_KEYSTORE="$APP_DIR/$KEYSTORE_FILE_NAME"
 
-# Sentry release string for native builds (Gradle / Sentry tooling)
-# Example: SENTRY_RELEASE="app@1.0.0" (prefix defaults to "app", override with SENTRY_RELEASE_PREFIX)
-NATIVE_VERSION="$(
-  node -e "const fs=require('fs'); const p=require('path').join(process.argv[1], 'package.json'); const v=JSON.parse(fs.readFileSync(p,'utf8')).version; if(!v) process.exit(2); process.stdout.write(v);" "$ROOT_DIR"
-)" || {
-  echo -e "${RED}❌ Error: Could not read version from $ROOT_DIR/package.json${NC}"
-  exit 1
-}
-
-SENTRY_RELEASE_PREFIX="${SENTRY_RELEASE_PREFIX:-app}"
-if [ -z "${SENTRY_RELEASE:-}" ]; then
-  export SENTRY_RELEASE="${SENTRY_RELEASE_PREFIX}@${NATIVE_VERSION}"
-fi
-
-# Force prod-only builds
-export NODE_ENV="production"
-export EXPO_PUBLIC_ENVIRONMENT="prod"
+CLI_APP_VARIANT="${APP_VARIANT:-}"
 
 ENV_FILE=""
-
 if [ -f "$ROOT_DIR/.env.production.local" ]; then
   ENV_FILE="$ROOT_DIR/.env.production.local"
 elif [ -f "$ROOT_DIR/.env.local" ]; then
@@ -73,9 +54,42 @@ if [ -n "$ENV_FILE" ]; then
   set -a
   source "$ENV_FILE"
   set +a
-else
-  echo -e "${YELLOW}no .env.(production).local found ignore...${NC}"
 fi
+
+if [ -n "$CLI_APP_VARIANT" ]; then
+  export APP_VARIANT="$CLI_APP_VARIANT"
+else
+  export APP_VARIANT="${APP_VARIANT:-development}"
+fi
+export NODE_ENV="production"
+
+read_package_json_field() {
+  bun -e "const fs=require('fs'); const p=require('path').join(process.argv[1], 'package.json'); const field=process.argv[2]; const v=JSON.parse(fs.readFileSync(p,'utf8'))[field]; if(v===undefined||v===null||v==='') process.exit(2); process.stdout.write(String(v));" "$ROOT_DIR" "$1"
+}
+
+read_app_config_field() {
+  bun -e "import config from './app.config.ts'; const mode=process.argv[1]; const name=config.name; if(!name) process.exit(2); if(mode==='display') { process.stdout.write(name); } else { const pascal=name.split(/[\\s\\-_]+/).filter(Boolean).map((w)=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(''); if(!pascal) process.exit(2); process.stdout.write(pascal); }" "$1"
+}
+
+APP_DISPLAY_NAME="$(cd "$ROOT_DIR" && read_app_config_field display)" || {
+  echo -e "${RED}❌ Error: Could not read app name from $ROOT_DIR/app.config.ts${NC}"
+  exit 1
+}
+
+APP_NAME="$(cd "$ROOT_DIR" && read_app_config_field pascal)" || {
+  echo -e "${RED}❌ Error: Could not read app name from $ROOT_DIR/app.config.ts${NC}"
+  exit 1
+}
+
+APP_VERSION="$(read_package_json_field androidVersion)" || {
+  echo -e "${RED}❌ Error: Could not read androidVersion from $ROOT_DIR/package.json${NC}"
+  exit 1
+}
+
+APP_VERSION_CODE="$(read_package_json_field androidVersionCode)" || {
+  echo -e "${RED}❌ Error: Could not read androidVersionCode from $ROOT_DIR/package.json${NC}"
+  exit 1
+}
 
 # =========================================================
 # 2. ARGUMENT PARSING
@@ -91,6 +105,48 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 BUILD_LOG_FILE="$ANDROID_DIR/android_build.log"
+GRADLE_PROPERTIES_FILE="$ANDROID_DIR/gradle.properties"
+
+detect_total_memory_mb() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sysctl -n hw.memsize 2>/dev/null | awk '{ print int($1 / 1024 / 1024) }'
+        return
+    fi
+
+    if command -v free >/dev/null 2>&1; then
+        free -m 2>/dev/null | awk '/^Mem:/ { print $2 }'
+        return
+    fi
+
+    echo ""
+}
+
+choose_gradle_jvm_args() {
+    local memory_mb="$1"
+
+    if [ -n "${GRADLE_JVM_ARGS:-}" ]; then
+        printf '%s' "$GRADLE_JVM_ARGS"
+        return
+    fi
+
+    if [ -z "$memory_mb" ]; then
+        printf '%s' '-Xmx3072m -XX:MaxMetaspaceSize=768m'
+        return
+    fi
+
+    if [ "$memory_mb" -ge 32768 ]; then
+        printf '%s' '-Xmx6144m -XX:MaxMetaspaceSize=1024m'
+    elif [ "$memory_mb" -ge 16384 ]; then
+        printf '%s' '-Xmx4096m -XX:MaxMetaspaceSize=1024m'
+    elif [ "$memory_mb" -ge 8192 ]; then
+        printf '%s' '-Xmx3072m -XX:MaxMetaspaceSize=768m'
+    else
+        printf '%s' '-Xmx2048m -XX:MaxMetaspaceSize=512m'
+    fi
+}
+
+TOTAL_MEMORY_MB="$(detect_total_memory_mb)"
+GRADLE_JVM_ARGS="$(choose_gradle_jvm_args "$TOTAL_MEMORY_MB")"
 
 if [ "$BUILD_FORMAT" == "aab" ]; then
     GRADLE_TASK="bundleRelease"
@@ -114,10 +170,11 @@ echo -e "${GREEN}==========================================${NC}"
 echo -e "${GREEN}📋 BUILD SUMMARY${NC}"
 echo -e "${GREEN}==========================================${NC}"
 echo -e "📂 Target Dir : ${CYAN}$ANDROID_DIR${NC}"
+echo -e "📱 App Name   : ${CYAN}$APP_DISPLAY_NAME${NC}"
+echo -e "🏷️  Variant    : ${CYAN}$APP_VARIANT${NC}"
 echo -e "📦 Build Type : ${CYAN}$BUILD_FORMAT${NC}"
 echo -e "📄 Output     : $FINAL_FILENAME"
-echo -e "🧷 Sentry Rel : ${CYAN}$SENTRY_RELEASE${NC}"
-
+echo -e "🔢 App Version: ${CYAN}$APP_VERSION ($APP_VERSION_CODE)${NC}"
 echo -e "${GREEN}==========================================${NC}"
 echo ""
 
@@ -132,7 +189,7 @@ echo ""
 cd "$ROOT_DIR"
 
 echo -e "${CYAN}1️⃣  Step 1/5: Running Expo prebuild (Android)... ${NC}"
-bun prebuild:android
+APP_VARIANT="$APP_VARIANT" bun expo prebuild --platform android --no-clean
 PREBUILD_STATUS=$?
 
 if [ $PREBUILD_STATUS -ne 0 ]; then
@@ -143,6 +200,20 @@ fi
 # Verify prebuild output exists
 if [ ! -d "$ANDROID_DIR" ] || [ ! -d "$APP_DIR" ]; then
     echo -e "${RED}❌ Error: Android native project not found after prebuild.${NC}"
+    exit 1
+fi
+
+echo -n -e "${CYAN}1️⃣  Step 1.5/5: Applying Gradle heap settings... ${NC}"
+if [ -f "$GRADLE_PROPERTIES_FILE" ]; then
+    if grep -q '^org.gradle.jvmargs=' "$GRADLE_PROPERTIES_FILE"; then
+        perl -0pi -e "s/^org\\.gradle\\.jvmargs=.*/org.gradle.jvmargs=${GRADLE_JVM_ARGS}/m" "$GRADLE_PROPERTIES_FILE"
+    else
+        printf '\norg.gradle.jvmargs=%s\n' "$GRADLE_JVM_ARGS" >> "$GRADLE_PROPERTIES_FILE"
+    fi
+    echo -e "${GREEN}DONE${NC}"
+else
+    echo -e "${RED}FAILED${NC}"
+    echo -e "${RED}❌ Error: $GRADLE_PROPERTIES_FILE not found after prebuild.${NC}"
     exit 1
 fi
 

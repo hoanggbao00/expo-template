@@ -1,10 +1,18 @@
 import type { ExpoConfig } from "expo/config";
 import packageJson from "./package.json";
 
-const APP_NAME = "My App";
-const APP_SLUG = "my-app";
-const APP_BUNDLE_IDENTIFIER = "com.hoanggbao.myapp";
-const APP_SCHEME = "myapp"; // For deep linking open app myapp://
+const APP_VARIANT = process.env.APP_VARIANT === "production" ? "production" : "development";
+const IS_PRODUCTION = APP_VARIANT === "production";
+
+const BASE_APP_NAME = "My App";
+const BASE_APP_SLUG = "my-app";
+const BASE_BUNDLE_IDENTIFIER = "com.hoanggbao.myapp";
+const BASE_APP_SCHEME = "myapp";
+
+const APP_NAME = IS_PRODUCTION ? BASE_APP_NAME : `${BASE_APP_NAME} (Dev)`;
+const APP_SLUG = IS_PRODUCTION ? BASE_APP_SLUG : `${BASE_APP_SLUG}-dev`;
+const APP_BUNDLE_IDENTIFIER = IS_PRODUCTION ? BASE_BUNDLE_IDENTIFIER : `${BASE_BUNDLE_IDENTIFIER}.dev`;
+const APP_SCHEME = IS_PRODUCTION ? BASE_APP_SCHEME : `${BASE_APP_SCHEME}-dev`;
 
 const AndroidVersionCode = packageJson.androidVersionCode || 1;
 const AndroidVersion = packageJson.androidVersion || "1.0.0";
@@ -55,6 +63,9 @@ const expoConfig: ExpoConfig = {
           targetSdkVersion: 36,
           minSdkVersion: 28, // Android 9
           buildArchs: ["arm64-v8a"],
+          // R8: smaller release builds; may crash if rules are wrong — retest APK after each build.
+          enableMinifyInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
         },
       },
     ],
@@ -78,7 +89,7 @@ const expoConfig: ExpoConfig = {
       {
         iconSets: [
           {
-            inputDir: "./assets/icons",
+            inputDir: "./assets/icons/common",
             outputDir: "./assets/icons/output",
           },
         ],
