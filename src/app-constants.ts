@@ -10,19 +10,20 @@ export const IS_ANDROID = Platform.OS === "android";
 
 // App Constants
 export const APP_NAME = Constants.expoConfig?.name ?? "Unknown";
-export const APP_BUNDLE_IDENTIFIER = Platform.select({
-  ios: Constants.expoConfig?.ios?.bundleIdentifier ?? "Unknown",
-  android: Constants.expoConfig?.android?.package ?? "Unknown",
-}) ?? "Unknown";
-
-export const APP_VERSION = Platform.select({
-  ios: Constants.expoConfig?.ios?.version ?? "Unknown",
-  android: Constants.expoConfig?.android?.version ?? "Unknown",
-}) ?? "Unknown";
-
-export const APP_VERSION_CODE = Platform.select({
-  ios: Constants.expoConfig?.ios?.buildNumber?.toString() ?? "Unknown",
-  android: Constants.expoConfig?.android?.versionCode?.toString() ?? "Unknown",
-}) ?? "Unknown";
+export const APP_BUNDLE_IDENTIFIER =
+  Platform.select({
+    ios: Constants.expoConfig?.ios?.bundleIdentifier,
+    android: Constants.expoConfig?.android?.package,
+  }) ?? "Unknown";
+export const APP_VERSION =
+  Platform.select({
+    ios: Constants.expoConfig?.ios?.version,
+    android: Constants.expoConfig?.android?.version,
+  }) ?? "Unknown";
+export const APP_VERSION_CODE =
+  Platform.select({
+    ios: Constants.expoConfig?.ios?.buildNumber?.toString(),
+    android: Constants.expoConfig?.android?.versionCode?.toString(),
+  }) ?? "Unknown";
 
 export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");

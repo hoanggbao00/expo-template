@@ -1,4 +1,4 @@
-import "@@/global.css";
+import "@/global.css";
 
 import { Providers } from "@/providers/providers";
 import * as SplashScreen from "expo-splash-screen";

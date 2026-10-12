@@ -1,14 +1,17 @@
 import type { ExpoConfig } from "expo/config";
 import packageJson from "./package.json";
 
-const APP_VARIANT = process.env.APP_VARIANT === "production" ? "production" : "development";
-const IS_PRODUCTION = APP_VARIANT === "production";
+// Native identifiers (name/slug/bundle id/scheme) must stay in source, not .env:
+// they bake into the native project at prebuild time, so an out-of-sync .env
+// would silently diverge from the installed binary. Only APP_VARIANT is env-driven.
+const IS_PRODUCTION = process.env.APP_VARIANT === "production";
 
 const BASE_APP_NAME = "My App";
 const BASE_APP_SLUG = "my-app";
 const BASE_BUNDLE_IDENTIFIER = "com.hoanggbao.myapp";
 const BASE_APP_SCHEME = "myapp";
 
+// Dev build gets a distinct name/id/scheme so it can be installed alongside production.
 const APP_NAME = IS_PRODUCTION ? BASE_APP_NAME : `${BASE_APP_NAME} (Dev)`;
 const APP_SLUG = IS_PRODUCTION ? BASE_APP_SLUG : `${BASE_APP_SLUG}-dev`;
 const APP_BUNDLE_IDENTIFIER = IS_PRODUCTION ? BASE_BUNDLE_IDENTIFIER : `${BASE_BUNDLE_IDENTIFIER}.dev`;
@@ -63,9 +66,6 @@ const expoConfig: ExpoConfig = {
           targetSdkVersion: 36,
           minSdkVersion: 28, // Android 9
           buildArchs: ["arm64-v8a"],
-          // R8: smaller release builds; may crash if rules are wrong — retest APK after each build.
-          enableMinifyInReleaseBuilds: true,
-          enableShrinkResourcesInReleaseBuilds: true,
         },
       },
     ],
