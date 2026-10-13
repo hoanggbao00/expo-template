@@ -24,6 +24,7 @@ Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not Native
 - Use `bun` / `bun x`, never npm or yarn.
 - Use Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/.
 - Do not add `@react-navigation/*`.
+- Import `panelui-native` from subpaths (`panelui-native/components/<slug>`), never the root; Metro does not tree-shake.
 - Add i18n strings to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
 - Keep native identifiers in `app.config.ts`.
 - `metro.config.js` order matters: `withUniwindConfig()` first, bundle-mode config last.

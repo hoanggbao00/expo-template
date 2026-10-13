@@ -30,3 +30,17 @@ use `<Icon name="..." />` from `@/components/tw`.
 - `withNanoIcons()` in `metro.config.js` gives dev HMR: edit an SVG, Metro rebuilds and pushes the font.
 - Metro plugin is dev-only. Run prebuild before release builds or icons render blank.
 - Do not hand-edit generated output. Register new sets in `app.config.ts` `iconSets`.
+
+## PanelUI
+
+Import `panelui-native` from subpaths, never the root:
+
+```ts
+import { Button } from "panelui-native/components/button";
+import { cn } from "panelui-native/utils/cn";
+import { PanelUIProvider } from "panelui-native/provider";
+```
+
+The root entry re-exports every component. Metro does not tree-shake, so one root import
+loads and evaluates the whole library (charts, SVG, map) before the first screen. On Android
+this costs startup time and memory. Use `cn` via `@/lib/utils`.

@@ -178,6 +178,7 @@ Query defaults and global query/mutation error logging.
 | Wrapped UI | `src/components/tw/` |
 | Server state | `@tanstack/react-query`, `src/lib/query-client.ts` |
 | Network transport | `react-native-nitro-fetch`, wired in `index.js` |
+| UI library | `panelui-native` — import subpaths only (`panelui-native/components/button`, `panelui-native/utils/cn`) |
 | Client state | `zustand`, `react-native-mmkv`, `src/state/` |
 | Localization | `i18next`, `react-i18next`, `src/i18n/` |
 | Motion | `react-native-reanimated`, `react-native-worklets`, `react-native-ease` |
