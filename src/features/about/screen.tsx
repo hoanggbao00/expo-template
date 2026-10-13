@@ -6,7 +6,7 @@ export default function AboutScreen() {
   const { t } = useAppTranslation("about");
 
   return (
-    <SafeAreaView className="flex-1 flex-center bg-background-secondary">
+    <SafeAreaView className="flex-1 flex-center bg-card">
       <View className="w-full flex-1 flex-center gap-2">
         <Text>{t("title")}</Text>
         <Spinner />

@@ -1,14 +1,14 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
-import type { ThemeColor } from "@/styles/colors.type";
+import type { SemanticColor, TextColor, ThemeColor } from "@/styles/colors.type";
 import { FONT_MAP, type FontWeight } from "@/styles/fonts";
 import { nf } from "@/utils/screen-utils";
 import type React from "react";
-import { Text as RNText } from "react-native";
+import { Text as RNText } from "react-native-plain-text";
 import { withUniwind } from "uniwind";
 
 // biome-ignore format: disable lineWidth format
 export type FontSize = 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 28 | 32 | 36 | 40 | 44 | 48 | 52;
-export type FontColor = ThemeColor;
+export type FontColor = TextColor | SemanticColor | "primary";
 
 type NameWithSWC = `${FontSize}.${FontWeight}.${FontColor}`;
 type NameWithSW = `${FontSize}.${FontWeight}`;
@@ -17,10 +17,10 @@ type Name = NameWithSWC | NameWithSW;
 /** Design line-height: 133.333% (4/3) */
 const LINE_HEIGHT_RATIO = 4 / 3;
 
-const DEFAULT_NAME: Name = "14.regular.text-primary";
+const DEFAULT_NAME: Name = "14.regular.foreground";
 interface Props extends React.ComponentProps<typeof RNText> {
   /**
-   * The shorthand for the Text component. (default: "14.regular.text-primary")
+   * The shorthand for the Text component. (default: "14.regular.foreground")
    */
   name?: Name;
   /**
@@ -41,19 +41,19 @@ interface Props extends React.ComponentProps<typeof RNText> {
    */
   weight?: FontWeight;
   /**
-   * The color for the Text component. (default: "text-primary")
+   * The color for the Text component. (default: "foreground")
    */
   color?: FontColor;
 }
 
 /**
  * ThemedText component.
- * @param {Name} name - The shorthand for the Text component. (default: "14.regular.text-primary")
+ * @param {Name} name - The shorthand for the Text component. (default: "14.regular.foreground")
  * @param {"left" | "center" | "right"} align - The alignment for the Text component. (default: "left")
  * @param {boolean} center - The center alignment for the Text component.
  * @param {number} size - The size for the Text component. (default: 14) or number in px.
  * @param {FontWeight} weight - The weight for the Text component. (default: "regular")
- * @param {FontColor} color - The color for the Text component. (default: "text-primary")
+ * @param {FontColor} color - The color for the Text component. (default: "foreground")
  */
 export function Text({
   name = DEFAULT_NAME,
@@ -71,7 +71,7 @@ export function Text({
   const fontSizeNumber = size ?? Number.parseInt(fs, 10);
   const fontFamily = FONT_MAP[weight || (fw as FontWeight)] || FONT_MAP.regular;
   const lineHeight = nf(fontSizeNumber) * LINE_HEIGHT_RATIO;
-  const color = useThemeColor(colorProp || (fc as ThemeColor) || "text-primary");
+  const color = useThemeColor(colorProp || (fc as ThemeColor) || "foreground");
 
   const baseStyle: Props["style"] = {
     fontFamily,

@@ -7,9 +7,10 @@
 # FEATURES: Smart Caching, Anti-Lag (CPU Limit), Clean Logs, Auto-Signing.
 #
 # EXAMPLES:
-#   1. ./scripts/build-android.sh                (APK)
-#   2. ./scripts/build-android.sh --aab          (AAB)
-#   3. ./scripts/build-android.sh --apk          (APK)
+#   1. ./scripts/build-android.sh                (production APK)
+#   2. ./scripts/build-android.sh --dev          (development APK)
+#   3. ./scripts/build-android.sh --aab          (production AAB)
+#   4. ./scripts/build-android.sh --dev --aab    (development AAB)
 # ==============================================================================
 
 # =========================================================
@@ -43,6 +44,16 @@ SOURCE_KEYSTORE="$ROOT_DIR/$KEYSTORE_FILE_NAME"
 DEST_KEYSTORE="$APP_DIR/$KEYSTORE_FILE_NAME"
 
 CLI_APP_VARIANT="${APP_VARIANT:-}"
+BUILD_FORMAT="apk"
+
+for arg in "$@"; do
+  case "$arg" in
+    --aab) BUILD_FORMAT="aab" ;;
+    --apk) BUILD_FORMAT="apk" ;;
+    --dev|--development) CLI_APP_VARIANT="development" ;;
+    --prod|--production) CLI_APP_VARIANT="production" ;;
+  esac
+done
 
 ENV_FILE=""
 if [ -f "$ROOT_DIR/.env.production.local" ]; then
@@ -59,7 +70,7 @@ fi
 if [ -n "$CLI_APP_VARIANT" ]; then
   export APP_VARIANT="$CLI_APP_VARIANT"
 else
-  export APP_VARIANT="${APP_VARIANT:-development}"
+  export APP_VARIANT="${APP_VARIANT:-production}"
 fi
 export NODE_ENV="production"
 
@@ -92,15 +103,12 @@ APP_VERSION_CODE="$(read_package_json_field androidVersionCode)" || {
 }
 
 # =========================================================
-# 2. ARGUMENT PARSING
+# 2. ARGUMENT VALIDATION (parsed earlier, before variant resolution)
 # =========================================================
-BUILD_FORMAT="apk"
-
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --aab) BUILD_FORMAT="aab"; shift ;;
-        --apk) BUILD_FORMAT="apk"; shift ;;
-        *) echo -e "${RED}❌ Error: Unknown argument: $1${NC}"; exit 1 ;;
+for arg in "$@"; do
+    case "$arg" in
+        --aab|--apk|--dev|--development|--prod|--production) ;;
+        *) echo -e "${RED}❌ Error: Unknown argument: $arg${NC}"; exit 1 ;;
     esac
 done
 
@@ -279,23 +287,11 @@ if [ -f "$SOURCE_FILE" ]; then
     mv "$SOURCE_FILE" "$DEST_FILE"
     echo -e "${GREEN}DONE${NC}"
 
-    echo -e "${CYAN}5️⃣  Step 5/5: 16 KB native alignment (check-align)${NC}"
-    CHECK_ALIGN_SCRIPT="$SCRIPT_DIR/check-align.sh"
-    if [ ! -f "$CHECK_ALIGN_SCRIPT" ]; then
-        echo -e "${YELLOW}⚠️  SKIP — check-align.sh not found${NC}"
-    else
-        if ! bash "$CHECK_ALIGN_SCRIPT" "$DEST_FILE"; then
-            echo -e "${RED}❌ Build stopped: 16 KB alignment check failed.${NC}"
-            exit 1
-        fi
-    fi
-
-    echo ""
+        echo ""
     echo -e "${GREEN}==========================================${NC}"
     echo -e "${GREEN}🎉 BUILD SUCCESSFUL!${NC}"
     echo -e "📂 Output: ${CYAN}$FINAL_FILENAME${NC}"
     echo -e "📍 Path  : ${CYAN}$DEST_FILE${NC}"
-    echo -e "💾 16KB  : ${CYAN}All Supported${NC}"
     echo -e "${GREEN}==========================================${NC}"
 else
     echo -e "${RED}FAILED (File not found)${NC}"

@@ -1,66 +1,190 @@
 /**
- * Ref: https://v3.heroui.com/docs/native/getting-started/colors#customizing-colors
- * After add a custom color, you need to add it to the ThemeColor type in `colors.type.ts` file.
- * To work with useThemeColor hook
+ * Light/dark tokens use PanelUI's Moon palette (node_modules/panelui-native/theme.css).
+ * Static hex/rgba only — native cannot evaluate color-mix(). Keep light/dark keys identical.
+ * After adding a token, add it to `colors.type.ts` to use it with useThemeColor.
  */
 
 @layer theme {
-  @variant light {
-    /* Override default colors */
-    --background: #111728;
-    --background-secondary: #1e2939;
+  :root {
+    @variant light {
+      --color-background: #ffffff;
+      --color-foreground: #08090a;
 
-    --text-primary: #f9fafc;
-    --text-secondary: #d0d5dc;
-    --text-disabled: #99a1af;
+      --color-card: #ffffff;
+      --color-card-foreground: #08090a;
 
-    /* Custom color */
-    --action: #2c7fff;
-    --primary-inverse: #f9fafc;
+      --color-popover: #ffffff;
+      --color-popover-foreground: #08090a;
 
-    --icon-primary: #f9fafc;
-    --icon-disabled: #99a1af;
+      --color-overlay: #ffffff;
+      --color-overlay-foreground: #08090a;
+      /* the sunken band under a card or dialog: black at 3.5% */
+      --color-inset: rgba(0, 0, 0, 0.035);
 
-    --semantic-yellow: #fbc02d;
-    --semantic-red: #e33535;
+      --color-primary: #5e6ad2;
+      --color-primary-foreground: #ffffff;
+
+      --color-secondary: rgba(0, 0, 0, 0.05);
+      --color-secondary-foreground: #08090a;
+
+      --color-muted: rgba(0, 0, 0, 0.05);
+      --color-muted-foreground: #6b6f76;
+
+      --color-accent: rgba(0, 0, 0, 0.06);
+      --color-accent-foreground: #08090a;
+
+      --color-destructive: #eb5757;
+      --color-destructive-foreground: #c62b30;
+      --color-destructive-solid-foreground: #08090a;
+
+      --color-info: #4ea7fc;
+      --color-info-foreground: #0b6ec4;
+      --color-info-solid-foreground: #08090a;
+
+      --color-success: #27a644;
+      --color-success-foreground: #1c7a32;
+      --color-success-solid-foreground: #08090a;
+
+      --color-warning: #f2c94c;
+      --color-warning-foreground: #8a6d0b;
+      --color-warning-solid-foreground: #08090a;
+
+      --color-border: rgba(0, 0, 0, 0.08);
+      --color-input: rgba(0, 0, 0, 0.12);
+      --color-ring: #5e6ad2;
+
+      --color-surface: #f5f6f6;
+      --color-surface-secondary: #f6f7f7;
+      --color-surface-tertiary: #eeeff1;
+      --color-skeleton: rgba(0, 0, 0, 0.07);
+
+      --color-info-soft: rgba(78, 167, 252, 0.1);
+      --color-info-subtle: rgba(78, 167, 252, 0.08);
+      --color-success-soft: rgba(39, 166, 68, 0.1);
+      --color-success-subtle: rgba(39, 166, 68, 0.08);
+      --color-warning-soft: rgba(242, 201, 76, 0.14);
+      --color-warning-subtle: rgba(242, 201, 76, 0.1);
+      --color-destructive-soft: rgba(235, 87, 87, 0.1);
+      --color-destructive-subtle: rgba(235, 87, 87, 0.08);
+
+      /* syntax colours */
+      --color-code-keyword: #5e6ad2;
+      --color-code-string: #1c7a32;
+      --color-code-number: #0b6ec4;
+      --color-code-comment: #8a8f98;
+      --color-code-function: #6639ba;
+      --color-code-property: #953800;
+      --color-code-punctuation: #62666d;
+      --color-code-inserted: #1c7a32;
+      --color-code-deleted: #cf222e;
+
+      /* chart series, in order of prominence */
+      --color-chart-1: #5e6ad2;
+      --color-chart-2: #4ea7fc;
+      --color-chart-3: #27a644;
+      --color-chart-4: #f2c94c;
+      --color-chart-5: #7a7fad;
+
+      /* Moon shape scale */
+      --radius-xs: 4px;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 24px;
+      --radius-3xl: 32px;
+    }
+
+    @variant dark {
+      --color-background: #010102;
+      --color-foreground: #f7f8f8;
+
+      --color-card: #0f1011;
+      --color-card-foreground: #f7f8f8;
+
+      --color-popover: #141516;
+      --color-popover-foreground: #f7f8f8;
+
+      --color-overlay: #18191a;
+      --color-overlay-foreground: #f7f8f8;
+      /* the sunken band under a card or dialog: black at 22% */
+      --color-inset: rgba(0, 0, 0, 0.22);
+
+      --color-primary: #5e6ad2;
+      --color-primary-foreground: #ffffff;
+
+      --color-secondary: rgba(255, 255, 255, 0.06);
+      --color-secondary-foreground: #f7f8f8;
+
+      --color-muted: rgba(255, 255, 255, 0.06);
+      --color-muted-foreground: #8a8f98;
+
+      --color-accent: rgba(255, 255, 255, 0.08);
+      --color-accent-foreground: #f7f8f8;
+
+      --color-destructive: #eb5757;
+      --color-destructive-foreground: #ff8a8a;
+      --color-destructive-solid-foreground: #08090a;
+
+      --color-info: #4ea7fc;
+      --color-info-foreground: #8ec5ff;
+      --color-info-solid-foreground: #08090a;
+
+      --color-success: #27a644;
+      --color-success-foreground: #4cc061;
+      --color-success-solid-foreground: #08090a;
+
+      --color-warning: #f2c94c;
+      --color-warning-foreground: #f5d97a;
+      --color-warning-solid-foreground: #08090a;
+
+      /* The hairlines are opaque, not translucent: the surface ladder is only
+         a few points wide, so a border mixed with whatever is under it would
+         read as a different line on each of them. */
+      --color-border: #23252a;
+      --color-input: #34343a;
+      --color-ring: #5e6ad2;
+
+      --color-surface: #0f1011;
+      --color-surface-secondary: #141516;
+      --color-surface-tertiary: #18191a;
+      --color-skeleton: rgba(255, 255, 255, 0.08);
+
+      --color-info-soft: rgba(78, 167, 252, 0.16);
+      --color-info-subtle: rgba(78, 167, 252, 0.1);
+      --color-success-soft: rgba(39, 166, 68, 0.18);
+      --color-success-subtle: rgba(39, 166, 68, 0.12);
+      --color-warning-soft: rgba(242, 201, 76, 0.16);
+      --color-warning-subtle: rgba(242, 201, 76, 0.1);
+      --color-destructive-soft: rgba(235, 87, 87, 0.16);
+      --color-destructive-subtle: rgba(235, 87, 87, 0.1);
+
+      /* syntax colours */
+      --color-code-keyword: #828fff;
+      --color-code-string: #4cc061;
+      --color-code-number: #8ec5ff;
+      --color-code-comment: #62666d;
+      --color-code-function: #d2a8ff;
+      --color-code-property: #ffa657;
+      --color-code-punctuation: #8a8f98;
+      --color-code-inserted: #4cc061;
+      --color-code-deleted: #ff8a8a;
+
+      /* chart series, in order of prominence */
+      --color-chart-1: #5e6ad2;
+      --color-chart-2: #4ea7fc;
+      --color-chart-3: #27a644;
+      --color-chart-4: #f2c94c;
+      --color-chart-5: #7a7fad;
+
+      /* Moon shape scale */
+      --radius-xs: 4px;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 24px;
+      --radius-3xl: 32px;
+    }
   }
-
-  @variant dark {
-    /* Override default colors */
-    --background: #111728;
-    --background-secondary: #1e2939;
-
-    --text-primary: #f9fafc;
-    --text-secondary: #d0d5dc;
-    --text-disabled: #99a1af;
-
-    /* Custom color */
-    --action: #2c7fff;
-    --primary-inverse: #f9fafc;
-
-    --icon-primary: #f9fafc;
-    --icon-disabled: #99a1af;
-
-    --semantic-yellow: #fbc02d;
-    --semantic-red: #e33535;
-  }
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-background-secondary: var(--background-secondary);
-
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-disabled: var(--text-disabled);
-
-  /* Custom color */
-  --color-action: var(--action);
-  --color-primary-inverse: var(--primary-inverse);
-
-  --color-icon-primary: var(--icon-primary);
-  --color-icon-disabled: var(--icon-disabled);
-
-  --color-semantic-yellow: var(--semantic-yellow);
-  --color-semantic-red: var(--semantic-red);
 }
