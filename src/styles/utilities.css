@@ -24,29 +24,3 @@
   top: 50%;
   transform: translateY(-50%);
 }
-
-@utility rounded-* {
-  border-radius: --value(integer);
-}
-
-@utility rounded-full {
-  border-radius: 999px;
-}
-
-@utility size-vw-* {
-  width: calc(--value(integer) * (100vw / var(--design-width)));
-  aspect-ratio: 1;
-}
-
-@utility size-vh-* {
-  height: calc(--value(integer) * (100vh / var(--design-height)));
-  aspect-ratio: 1;
-}
-
-/* @utility p-* {
-  --my-padding: calc(--value(integer) * (100vw / var(--design-width)));
-  padding-left: var(--my-padding);
-  padding-right: var(--my-padding);
-  padding-top: var(--my-padding);
-  padding-bottom: var(--my-padding);
-} */

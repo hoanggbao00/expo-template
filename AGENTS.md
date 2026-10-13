@@ -36,7 +36,7 @@ a git repo.
 
 - Always use Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/.
 - Do not add `@react-navigation/*`; `expo-router` no longer depends on React Navigation.
-- Keep route files in `src/app/` thin. Put screen logic in `src/features/<name>/screen.tsx`.
+- Keep route files in `src/app/` thin. Put screen UI in `src/screens/<name>/index.tsx` with screen-local components alongside. Reserve `src/features/` for domain data logic such as APIs, queries, mutations, and query keys.
 - Use wrapped primitives from `@/components/tw` and `className` for UI.
 - Add i18n strings to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
 

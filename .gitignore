@@ -39,7 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
-/assets/icons/output
 
 # generated files
 release.keystore

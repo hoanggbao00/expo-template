@@ -11,7 +11,7 @@
     "email": "hoanggbao00@gmail.com",
     "url": "https://github.com/hoanggbao00"
   },
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "APP_VARIANT=development expo start",
     "prebuild:android": "APP_VARIANT=development expo prebuild --platform android --no-clean",
