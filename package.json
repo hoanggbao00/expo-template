@@ -36,6 +36,8 @@
     "@dev-plugins/react-query": "^0.4.0",
     "@expo-google-fonts/nunito": "^0.4.2",
     "@expo/ui": "~57.0.23",
+    "@react-native-masked-view/masked-view": "0.3.2",
+    "@rnrepo/expo-config-plugin": "^0.3.6",
     "@tanstack/react-query": "^5.102.8",
     "clsx": "^2.1.1",
     "expo": "~57.0.28",
@@ -44,7 +46,9 @@
     "expo-constants": "~57.0.21",
     "expo-device": "~57.0.2",
     "expo-font": "~57.0.4",
+    "expo-haptics": "~57.0.3",
     "expo-image": "~57.0.5",
+    "expo-linear-gradient": "~57.0.2",
     "expo-linking": "~57.0.12",
     "expo-localization": "~57.0.2",
     "expo-router": "~57.0.26",
@@ -52,7 +56,7 @@
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
     "i18next": "^26.4.4",
-    "pressto": "^0.7.0",
+    "panelui-native": "0.109.0",
     "react": "19.2.3",
     "react-i18next": "^17.0.16",
     "react-native": "0.86.3",
@@ -63,8 +67,10 @@
     "react-native-nano-icons": "^1.0.0",
     "react-native-nitro-fetch": "^1.8.0",
     "react-native-nitro-modules": "^0.36.1",
+    "react-native-plain-text": "0.9.3",
     "react-native-reanimated": "4.5.3",
     "react-native-safe-area-context": "~5.9.1",
+    "react-native-svg": "15.15.4",
     "react-native-worklets": "0.10.4",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.1",
@@ -101,7 +107,6 @@
   "patchedDependencies": {
     "metro@0.84.4": "patches/metro@0.84.4.patch",
     "metro-runtime@0.84.4": "patches/metro-runtime@0.84.4.patch",
-    "react-native-worklets@0.10.4": "patches/react-native-worklets@0.10.4.patch",
-    "pressto@0.7.0": "patches/pressto@0.7.0.patch"
+    "react-native-worklets@0.10.4": "patches/react-native-worklets@0.10.4.patch"
   }
 }

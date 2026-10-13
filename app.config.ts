@@ -56,6 +56,7 @@ const expoConfig: ExpoConfig = {
     versionCode: AndroidVersionCode,
   },
   plugins: [
+    "@rnrepo/expo-config-plugin",
     [
       "expo-build-properties",
       {

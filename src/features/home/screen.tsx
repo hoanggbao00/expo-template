@@ -6,7 +6,7 @@ export default function HomeScreen() {
   const { t } = useAppTranslation("home");
 
   return (
-    <SafeAreaView className="flex-1 flex-center bg-background-secondary">
+    <SafeAreaView className="flex-1 flex-center bg-card">
       <View className="w-full flex-1 flex-center gap-2">
         <Text>{t("title")}</Text>
         <Spinner />

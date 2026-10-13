@@ -1,7 +1,13 @@
-export type BackgroundColor = "background-secondary";
-export type TextColor = "text-primary" | "text-secondary" | "text-disabled";
-export type CustomColor = "action" | "primary-inverse";
-export type IconColor = "icon-primary" | "icon-disabled";
-export type SemanticColor = "semantic-yellow" | "semantic-red";
+// PanelUI color tokens (without the `--color-` prefix) overridden in colors.css
+export type SurfaceColor = "background" | "card" | "popover" | "overlay" | "surface" | "muted" | "secondary" | "accent";
+export type TextColor =
+  | "foreground"
+  | "card-foreground"
+  | "muted-foreground"
+  | "secondary-foreground"
+  | "accent-foreground"
+  | "primary-foreground";
+export type BrandColor = "primary" | "border" | "input" | "ring";
+export type SemanticColor = "info" | "success" | "warning" | "destructive";
 
-export type ThemeColor = BackgroundColor | TextColor | CustomColor | IconColor | SemanticColor;
+export type ThemeColor = SurfaceColor | TextColor | BrandColor | SemanticColor;

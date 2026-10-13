@@ -1,6 +1,8 @@
-import { GestureHandlerRootView } from "@/components/tw";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { StatusBar } from "expo-status-bar";
-import { KeyboardProvider } from "react-native-keyboard-controller";
+import { setBackgroundColorAsync } from "expo-system-ui";
+import { PanelUIProvider } from "panelui-native/provider";
+import { useEffect } from "react";
 import { type EdgeInsets, SafeAreaListener } from "react-native-safe-area-context";
 import { Uniwind, useUniwind } from "uniwind";
 
@@ -10,19 +12,21 @@ interface ThemeProviderProps {
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const { theme } = useUniwind();
+  const background = useThemeColor("background");
+
+  useEffect(() => {
+    setBackgroundColorAsync(background);
+  }, [background]);
 
   const onChange = ({ insets }: { insets: EdgeInsets }) => {
     Uniwind.updateInsets(insets);
   };
 
+  // PanelUIProvider owns GestureHandlerRootView, KeyboardProvider, portals, and the themed background.
   return (
-    <>
-      <StatusBar style={theme === "dark" ? "dark" : "light"} />
-      <KeyboardProvider>
-        <GestureHandlerRootView className="flex-1">
-          <SafeAreaListener onChange={onChange}>{children}</SafeAreaListener>
-        </GestureHandlerRootView>
-      </KeyboardProvider>
-    </>
+    <PanelUIProvider>
+      <StatusBar style={theme === "dark" ? "light" : "dark"} />
+      <SafeAreaListener onChange={onChange}>{children}</SafeAreaListener>
+    </PanelUIProvider>
   );
 }

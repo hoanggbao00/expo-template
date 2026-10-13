@@ -2,7 +2,7 @@ import "@/global.css";
 
 import { Providers } from "@/providers/providers";
 import * as SplashScreen from "expo-splash-screen";
-import AppTabs from "@/components/app-tabs";
+import AppStack from "@/components/app-stack";
 import { useInitDeviceId } from "@/hooks/use-init-device-id";
 
 // Default error boundary
@@ -16,7 +16,7 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <AppTabs />
+      <AppStack />
     </Providers>
   );
 }

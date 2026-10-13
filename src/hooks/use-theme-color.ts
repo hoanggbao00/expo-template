@@ -10,11 +10,11 @@ export function useThemeColor(themeColor: readonly ThemeColor[]): string[];
  * @returns The theme color
  * @example
  * const color = useThemeColor("background");
- * const [background, textPrimary] = useThemeColor(["background", "text-primary"]);
+ * const [background, foreground] = useThemeColor(["background", "foreground"]);
  */
 export function useThemeColor(themeColor: ThemeColor | readonly ThemeColor[]): string | string[] {
   const isArray = Array.isArray(themeColor);
-  const cssVariables = isArray ? themeColor.map((color) => `--${color}`) : [`--${themeColor}`];
+  const cssVariables = isArray ? themeColor.map((color) => `--color-${color}`) : [`--color-${themeColor}`];
 
   const resolvedColors = useCSSVariable(cssVariables);
 
