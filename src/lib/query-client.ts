@@ -23,7 +23,6 @@ export const queryClient = new QueryClient({
       gcTime: ms.Day(1),
       retry: 2,
       refetchOnWindowFocus: true,
-      refetchOnReconnect: true,
       refetchOnMount: true,
       networkMode: "online",
     },

@@ -1,26 +1,30 @@
 import { NunitoFonts } from "@/styles/fonts";
+import { createLogger } from "@/utils/logger";
 import { useFonts } from "@expo-google-fonts/nunito";
 import { hideAsync as hideSplashScreenAsync } from "expo-splash-screen";
 import { useEffect } from "react";
-import { Alert } from "react-native";
+
+const logger = createLogger("font-provider");
 
 interface FontProviderProps {
   children: React.ReactNode;
 }
 export default function FontProvider({ children }: FontProviderProps) {
   const [loaded, error] = useFonts(NunitoFonts);
+  const ready = loaded || error !== null;
 
   useEffect(() => {
     if (error) {
-      Alert.alert("❌ Error loading fonts", error.message);
+      // Do not block the app: fall back to system fonts rather than staying on the splash forever.
+      logger.error("Failed to load fonts, using system fallback", error);
     }
   }, [error]);
 
   useEffect(() => {
-    if (loaded) hideSplashScreenAsync();
-  }, [loaded]);
+    if (ready) hideSplashScreenAsync();
+  }, [ready]);
 
-  if (!loaded) return null;
+  if (!ready) return null;
 
   return children;
 }

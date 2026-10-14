@@ -5,8 +5,8 @@ import * as SplashScreen from "expo-splash-screen";
 import AppStack from "@/components/app-stack";
 import { useInitDeviceId } from "@/hooks/use-init-device-id";
 
-// Default error boundary
-export { ErrorBoundary } from "expo-router";
+// Custom error boundary (placeholder for crash reporting inside)
+export { ErrorBoundary } from "@/components/error-boundary";
 
 // Prevent auto hide splash screen when fonts are loaded in the FontProvider
 SplashScreen.preventAutoHideAsync();
