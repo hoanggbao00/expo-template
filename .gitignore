@@ -45,6 +45,3 @@ release.keystore
 *.apk
 *.aab
 *.ipa
-
-# uniwind generated types
-uniwind-types.d.ts
