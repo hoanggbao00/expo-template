@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["ultracite/biome/core", "ultracite/biome/react"],
   "files": {
-    "includes": ["!src/uniwind-types.d.ts", "!.vscode"]
+    "includes": ["!uniwind-types.d.ts", "!.vscode", "!.*/skills"]
   },
   "linter": {
     "rules": {
@@ -11,6 +11,14 @@
         "noConsole": "warn"
       },
       "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "panelui-native": "Import from a subpath (panelui-native/components/<slug>, panelui-native/utils/cn). Metro does not tree-shake the root entry."
+            }
+          }
+        },
         "useFilenamingConvention": "off",
         "useBlockStatements": "off"
       },

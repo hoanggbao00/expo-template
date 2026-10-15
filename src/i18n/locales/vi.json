@@ -4,5 +4,10 @@
   },
   "about": {
     "title": "Giới thiệu"
+  },
+  "error": {
+    "title": "Đã xảy ra lỗi",
+    "message": "Có lỗi không mong muốn xảy ra. Vui lòng thử lại.",
+    "retry": "Thử lại"
   }
 }

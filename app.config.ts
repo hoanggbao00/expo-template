@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import { type ConfigPlugin, withGradleProperties } from "expo/config-plugins";
 import packageJson from "./package.json";
 
 // Native identifiers (name/slug/bundle id/scheme) must stay in source, not .env:
@@ -21,6 +22,14 @@ const AndroidVersionCode = packageJson.androidVersionCode || 1;
 const AndroidVersion = packageJson.androidVersion || "1.0.0";
 const IosVersion = packageJson.iosVersion || "1.0.0";
 const IosBuildNumber = packageJson.iosBuildNumber || 1;
+
+// GIF support is on by default in the generated Android project; this template does not use GIFs.
+const withoutGifSupport: ConfigPlugin = (config) =>
+  withGradleProperties(config, (cfg) => {
+    cfg.modResults = cfg.modResults.filter((item) => !(item.type === "property" && item.key === "expo.gif.enabled"));
+    cfg.modResults.push({ type: "property", key: "expo.gif.enabled", value: "false" });
+    return cfg;
+  });
 
 const expoConfig: ExpoConfig = {
   name: APP_NAME,
@@ -103,4 +112,4 @@ const expoConfig: ExpoConfig = {
   },
 };
 
-export default expoConfig;
+export default withoutGifSupport(expoConfig);

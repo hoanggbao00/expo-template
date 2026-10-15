@@ -4,5 +4,10 @@
   },
   "about": {
     "title": "About"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
   }
 }

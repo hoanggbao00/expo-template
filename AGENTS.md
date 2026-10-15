@@ -1,55 +1,37 @@
 # AGENTS.md
 
-Short project context for agents. Read this before editing code.
+Short routing context for agents. Load task-specific docs only when needed.
 
-## Project Summary
+## Project baseline
 
-This is an Expo SDK 57 React Native app using the new architecture.
+Expo SDK 57, React Native 0.86.x, React 19.2.x, New Architecture, React Compiler, and Expo Router.
+Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not NativeWind.
 
-- Expo SDK 57 (`expo` ~57.0.x), React Native 0.86.x, React 19.2.x.
-- `expo-router` file-based routing with typed routes, React Compiler, and native tabs.
-- `uniwind` for Tailwind CSS v4 styling. This is not NativeWind.
-- Zustand persisted to MMKV for state.
-- `i18next` / `react-i18next` for typed i18n.
-- `react-native-reanimated` v4 + `react-native-worklets` with bundle mode enabled.
-- `react-native-nano-icons` for generated icons.
-- Bun is the package manager. Use `bun` / `bun x`, not npm/yarn.
+## Read by task
 
-## Key Commands
+| Task | Read |
+| --- | --- |
+| Any code change | [docs/before-code.md](docs/before-code.md) |
+| New route, screen, folder, or file placement | [docs/project-structure.md](docs/project-structure.md) |
+| UI, styling, theme, tokens, layout | [docs/design-styling.md](docs/design-styling.md) |
+| Shared or screen-local UI, icons | [docs/components.md](docs/components.md) |
+| Commands, validation, CI, native, Metro | [docs/development.md](docs/development.md) |
+| Branding, dev/prod mode, product boundary | [docs/product.md](docs/product.md) |
+| General project context | [docs/overview.md](docs/overview.md) |
 
-```bash
-bun start
-bun run android
-bun run ios
-bun run check
-bun run typecheck
-bun run fix
-bun run prebuild:android
-bun run prebuild:ios
-```
+## Non-negotiable rules
 
-Run `bun run check` and `bun run typecheck` before finishing code changes. If this workspace
-does not have `.git`, use `bun install --ignore-scripts` because `lefthook install` fails outside
-a git repo.
-
-## Important Notes
-
-- Always use Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/.
-- Do not add `@react-navigation/*`; `expo-router` no longer depends on React Navigation.
-- Keep route files in `src/app/` thin. Put screen UI in `src/screens/<name>/index.tsx` with screen-local components alongside. Reserve `src/features/` for domain data logic such as APIs, queries, mutations, and query keys.
-- Use wrapped primitives from `@/components/tw` and `className` for UI.
+- Use `bun` / `bun x`, never npm or yarn.
+- Use Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/.
+- Do not add `@react-navigation/*`.
+- Import `panelui-native` from subpaths (`panelui-native/components/<slug>`), never the root; Metro does not tree-shake.
 - Add i18n strings to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
-
-## Native / Metro Caveats
-
-- Worklets bundle mode is configured in `babel.config.js` and `metro.config.js`.
-- `metro.config.js` order matters: `withUniwindConfig()` first, `getBundleModeMetroConfig()` last.
-- Bun `patchedDependencies` are required for Metro/worklets/bundle-mode integration.
-- `react-native-worklets`, `metro`, and `uniwind` upgrades require retesting Metro startup, HMR,
-  splash dismissal, native tabs, and Android bundle mode.
+- Keep native identifiers in `app.config.ts`.
+- `metro.config.js` order matters: `withUniwindConfig()` first, bundle-mode config last.
+- `react-native-worklets`, `metro`, and `uniwind` upgrades require native/runtime retesting.
 
 ## Aliases
 
-- `@/*` -> `src/*`
-- `@@/*` -> repo root
-- `@/assets/*` -> `assets/*`
+- `@/*` → `src/*`
+- `@@/*` → repo root
+- `@/assets/*` → `assets/*`

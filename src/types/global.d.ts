@@ -1,3 +1,6 @@
+// expo-env.d.ts (which normally pulls these in) is generated and gitignored, so CI would not have it.
+/// <reference types="expo/types" />
+
 declare global {
   type AppRoute = import("expo-router").Href;
 

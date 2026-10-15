@@ -1,151 +1,152 @@
 # Expo Template
 
-Android-first Expo app template.
+Android-first Expo SDK 57 template for React Native 0.86, React 19.2, and TypeScript 7.
+New Architecture, Hermes, React Compiler, Expo Router, Uniwind, TanStack Query, Zustand,
+i18next, Reanimated 4, and React Native Worklets bundle mode are configured.
 
-- Expo SDK 57
-- React Native 0.86
-- React 19.2
-- TypeScript 7
-- New Architecture
-- React Compiler
-- Expo Router typed routes
-
-No license. See `package.json` (`UNLICENSED`).
-
-## Stack
-
-| Area | Choice |
-| --- | --- |
-| Runtime | Expo SDK 57, React Native 0.86, Hermes |
-| Navigation | Expo Router, typed routes, native tabs support |
-| Styling | Uniwind + Tailwind CSS v4 |
-| UI primitives | Wrapped components in `src/components/tw/` |
-| Server state | TanStack Query + `react-native-nitro-fetch` |
-| Client state | Zustand + MMKV persistence |
-| Forms/data types | TypeScript |
-| Localization | i18next + react-i18next (`en`, `vi`) |
-| Motion | React Native Reanimated 4 + React Native Worklets |
-| Icons | react-native-nano-icons |
-| Validation/tooling | Ultracite, Biome, TypeScript, Lefthook |
-| Package manager | Bun 1.4.2 |
+No license. `package.json` uses `UNLICENSED`.
 
 ## Requirements
 
 - Bun 1.4.2+
-- Android Studio for Android
+- Android Studio and Android SDK for Android
 - Xcode for iOS
-- Development build; Expo Go is not the target runtime
+- Physical device or emulator/simulator
+- Development build; this project does not target Expo Go
 
-## Start
+## Development
+
+`bun start` starts Metro only. It does not install or launch the app.
+
+Normal development flow:
 
 ```bash
 bun install
-bun start
+bun run android
+# or
+bun run ios
 ```
 
-Open the development build on an emulator/device. Select app mode with `APP_VARIANT`.
+`bun run android` and `bun run ios` run `expo run:*`, which prebuilds native code when
+needed, builds the development app, installs it, and starts Metro. After app installation,
+use `bun start` when only Metro needs restarting.
 
-## Modes
+Run a specific mode explicitly:
+
+```bash
+APP_VARIANT=development bun run android
+APP_VARIANT=development bun run ios
+```
+
+## App modes
 
 `APP_VARIANT` controls branding and native identifiers in `app.config.ts`.
 
 | Mode | Value | Purpose |
 | --- | --- | --- |
-| Development | `development` | Dev app, installable beside production |
-| Production | `production` | Release app identifiers |
+| Development | `development` | Dev app name, slug, scheme, and bundle ID; installs beside production |
+| Production | `production` | Release app name, slug, scheme, and bundle ID |
 
-Use `.env.local` or `.env.production.local` when needed. Keep native identifiers in
-`app.config.ts`; they are compiled into native projects during prebuild.
+Native identifiers stay in `app.config.ts`, not `.env`. Prebuild bakes them into native
+projects. `.env.local` and `.env.production.local` are ignored by Git and may set
+`APP_VARIANT` or other local environment values.
+
+## Build
+
+### Native prebuild
+
+Generate or update native projects for a mode:
 
 ```bash
-bun start
-APP_VARIANT=development bun run android
-APP_VARIANT=production bun run prebuild:android:prod
-APP_VARIANT=production bun run prebuild:ios:prod
+bun run prebuild:android
+bun run prebuild:android:prod
+bun run prebuild:ios
+bun run prebuild:ios:prod
 ```
+
+`prebuild:*:clean` variants allow Expo to regenerate the native project cleanly. The normal
+commands use `--no-clean` to preserve existing native changes.
+
+### Android release artifacts
+
+```bash
+bun run build:apk
+bun run build:aab
+```
+
+Both use `scripts/build-android.sh`. Default mode is production. Override it with flags:
+
+```bash
+./scripts/build-android.sh --production --apk
+./scripts/build-android.sh --production --aab
+./scripts/build-android.sh --development --apk
+```
+
+The script reads app version and version code from `package.json`, resolves app name from
+`app.config.ts`, selects `APP_VARIANT`, configures Gradle, and signs using the local release
+keystore configuration. Review that script before using it for shared or public releases.
 
 ## Scripts
 
 ```bash
-bun start                         # Start Metro in development mode
-bun run android                   # Build and run development Android app
-bun run ios                       # Build and run development iOS app
+bun start                         # Start Metro only
+bun run android                   # Build, install, and run development Android app
+bun run ios                       # Build, install, and run development iOS app
 bun run check                     # Ultracite check
 bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
-bun run prebuild:android          # Prebuild development Android project
-bun run prebuild:android:prod     # Prebuild production Android project
-bun run prebuild:ios              # Prebuild development iOS project
-bun run prebuild:ios:prod         # Prebuild production iOS project
-bun run build:apk                 # Build release APK
-bun run build:aab                 # Build release AAB
+bun run prebuild:android          # Development Android prebuild, preserves native changes
+bun run prebuild:android:prod     # Production Android prebuild, preserves native changes
+bun run prebuild:android:clean    # Clean development Android prebuild
+bun run prebuild:ios              # Development iOS prebuild, preserves native changes
+bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes
+bun run prebuild:ios:clean        # Clean development iOS prebuild
+bun run build:apk                 # Production APK
+bun run build:aab                 # Production AAB
 ```
-
-CI runs `bun run check` and `bun run typecheck` on every push and pull request. A newer
-run cancels an older run for the same ref.
 
 ## Project structure
 
 ```text
-assets/                    # App images, fonts, generated icon inputs
+assets/                    # App icons, images, fonts, SVG icon sources/output
 scripts/                   # Build and repository scripts
 patches/                   # Bun patched dependencies
 polyfills/                 # Runtime polyfills
 src/
-├── app/                   # Expo Router routes only; keep files thin
-│   ├── _layout.tsx        # Root providers and navigation entry
+├── app/                   # Expo Router routes only; keep route files thin
+│   ├── _layout.tsx        # Root initialization and providers
 │   ├── index.tsx          # Home route
 │   └── about.tsx          # About route
-├── screens/               # Screen UI and screen-private components
-│   └── <name>/
-│       ├── index.tsx
-│       └── components/    # Optional screen-local components
+├── screens/               # Screen composition and screen-private components
+│   └── <name>/index.tsx
 ├── features/              # Domain data layer, not route UI
-│   └── <name>/
-│       ├── api/           # HTTP/data source functions
-│       ├── queries/       # useQuery definitions
-│       ├── mutations/     # useMutation definitions
-│       └── query-keys/    # Stable TanStack Query keys
-├── components/            # Shared UI components and wrapped primitives
+│   ├── <feature-name>.api.ts         # HTTP/data-source functions
+│   ├── <feature-name>.query.ts       # TanStack Query definitions
+│   ├── <feature-name>.mutation.ts    # TanStack Mutation definitions
+│   └── <feature-name>.query-key.ts   # Stable query keys
+├── components/            # Shared UI and Uniwind-wrapped primitives
 ├── providers/             # Query, font, theme, and i18n providers
-├── state/                 # Client state; persisted Zustand stores
-├── lib/                   # Shared configured clients and library adapters
+├── state/                 # Client state and persisted Zustand stores
+├── lib/                   # Shared clients and adapters
 ├── hooks/                 # Shared React hooks
 ├── i18n/                  # Locales and typed translation helpers
-├── styles/                # Uniwind/CSS tokens, fonts, gradients, utilities
+├── styles/                # Design tokens and styling helpers
 ├── utils/                 # Stateless helpers and logging
 └── types/                 # Global TypeScript declarations
 ```
 
-Routes import screen bodies. Screens compose shared UI and call feature hooks. Features
-own API calls and TanStack Query definitions. Providers wire cross-cutting runtime state.
-
-Example:
+Screen flow:
 
 ```text
 src/app/profile.tsx
-  -> src/screens/profile/index.tsx
-    -> src/features/profile/queries/use-profile.ts
-      -> src/features/profile/api/get-profile.ts
+  → src/screens/profile/index.tsx
+    → src/features/profile.query.ts
+      → src/features/profile.api.ts
 ```
 
-Keep route-specific concerns in `src/app/`. Keep reusable UI in `src/components/`. Keep
-screen-private UI in `src/screens/<name>/components/`. Add i18n keys to both locale files.
-
-## Design system
-
-Uniwind is the styling layer. Use `className` on wrapped primitives from `@/components/tw`.
-Do not introduce NativeWind or parallel styling systems.
-
-Design tokens live in:
-
-- `src/styles/colors.css` and `src/styles/colors.type.ts`
-- `src/styles/fonts.css` and `src/styles/fonts.ts`
-- `src/styles/utilities.css`
-- `src/styles/gradients.ts`
-
-Theme selection comes from Uniwind and maps into Expo Router navigation colors through
-`src/components/app-stack.tsx`. Add shared visual tokens before adding one-off values.
+Put screen-private UI in `src/screens/<name>/components/`. Promote UI to
+`src/components/` only when multiple screens use it. Add translation keys to both
+`src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
 
 ## Architecture
 
@@ -158,32 +159,105 @@ src/features            Domain API, queries, mutations, query keys
   ↓
 src/lib                 Shared clients and adapters
 
-src/providers           App-wide providers
-src/state               Local client state
-src/components          Reusable presentation
+src/providers            App-wide initialization
+src/state                Local persisted client state
+src/components            Reusable presentation
 ```
 
-Root initialization runs through `src/app/_layout.tsx`: providers wrap the router stack,
-fonts load before splash dismissal, i18n provides translations, and the device ID hook
-initializes runtime identity.
+`src/app/_layout.tsx` initializes device ID and wraps the router stack with Query, Font,
+Theme, and i18n providers. `src/components/app-stack.tsx` owns the Expo Router stack and
+maps Uniwind theme colors into navigation colors. `src/lib/query-client.ts` owns TanStack
+Query defaults and global query/mutation error logging.
 
-TanStack Query defaults are centralized in `src/lib/query-client.ts`. Override freshness,
-retry, or refetch behavior only when a feature needs different behavior.
+## Packages and configuration
 
-## Native and bundle-mode notes
+| Concern | Package / location |
+| --- | --- |
+| Navigation | `expo-router` |
+| Styling | `uniwind`, `tailwindcss`, `src/global.css` |
+| Wrapped UI | `src/components/tw/` |
+| Server state | `@tanstack/react-query`, `src/lib/query-client.ts` |
+| Network transport | `react-native-nitro-fetch`, wired in `index.js` |
+| UI library | `panelui-native` — import subpaths only (`panelui-native/components/button`, `panelui-native/utils/cn`) |
+| Client state | `zustand`, `react-native-mmkv`, `src/state/` |
+| Localization | `i18next`, `react-i18next`, `src/i18n/` |
+| Motion | `react-native-reanimated`, `react-native-worklets`, `react-native-ease` |
+| Icons | `react-native-nano-icons`, `assets/icons/`, `src/components/nano-icons.ts` |
+| Validation | `ultracite`, `@biomejs/biome`, `tsc` |
+| Package manager | Bun 1.4.2, `bun.lock` |
 
-`android/` and `ios/` are generated native projects. `expo prebuild` can regenerate them;
-review native changes before committing. Use `--no-clean` only when preserving local native
-changes is intentional.
+Important config locations:
 
-Worklets bundle mode is enabled for Hermes and Reanimated:
+- `app.config.ts`: app name, slug, scheme, bundle IDs, versions, plugins, splash, icon generation.
+- `package.json`: scripts, dependency versions, app versions, patched dependencies.
+- `babel.config.js`: Expo Babel preset and Worklets plugin.
+- `metro.config.js`: Uniwind, Nano Icons, and Worklets bundle mode integration.
+- `src/global.css`: Uniwind CSS entry.
+- `src/styles/`: colors, fonts, gradients, and custom utilities.
+- `tsconfig.json`: strict TypeScript and `@/*` aliases.
+- `biome.jsonc`: Ultracite/Biome rules and formatting.
+- `lefthook.yml`: pre-commit autofix.
+- `.github/workflows/check.yml`: CI `check` + `typecheck` on push/PR.
 
-- `babel.config.js` configures the Worklets plugin
-- `metro.config.js` applies Uniwind first and bundle-mode config last
-- `patches/` fixes Metro, Metro Runtime, and Worklets integration
+## Design and styling
 
-After upgrading Expo, Metro, Uniwind, Reanimated, or Worklets, run checks and retest Metro
-startup, HMR, splash dismissal, native tabs, and Android bundle mode.
+Uniwind is the styling system. NativeWind is not used.
+
+- Use `className` on wrapped primitives from `@/components/tw`.
+- Use wrapped components instead of raw native components when a wrapper exists.
+- Put shared colors, fonts, gradients, and utilities in `src/styles/`.
+- Keep screen-private styles beside screen components.
+- Use `StyleSheet.create` only for values that cannot be represented by existing tokens/utilities.
+
+Theme comes from Uniwind. Navigation receives mapped theme colors through
+`src/components/app-stack.tsx`.
+
+See [docs/design-styling.md](./docs/design-styling.md) and
+[docs/components.md](./docs/components.md).
+
+## Icons
+
+SVG icons are compiled into an icon font by `react-native-nano-icons`.
+
+- Source SVGs: `assets/icons/common/*.svg`
+- Generated output: `assets/icons/output/common.ttf` + `common.glyphmap.json` (committed)
+- Config: `react-native-nano-icons` plugin `iconSets` in `app.config.ts`
+- Usage: `<Icon name="chevron-left" />` from `@/components/tw`; names are typed from the glyphmap
+
+Generation:
+
+- **Prebuild** (`bun run prebuild:*`, `bun run android|ios`) regenerates the font when SVGs,
+  config, or library versions change, and links it into native projects. Unchanged sets are skipped.
+- **Dev HMR**: `withNanoIcons()` in `metro.config.js` watches the SVG folder. Add or edit an SVG
+  and Metro rebuilds the font and pushes it to the running dev app — no native rebuild.
+- The Metro plugin is dev-only and does not link fonts natively. Run prebuild before a
+  release build so the native binary ships the current font, otherwise icons render blank
+  (font integrity check fails).
+
+Do not hand-edit files in `assets/icons/output/`.
+
+## Worklets bundle mode
+
+Bundle mode is enabled for Hermes + Reanimated to reduce Android memory use and allow
+Worklets to access the full bundle.
+
+- `babel.config.js`: applies `react-native-worklets/plugin` once with `bundleMode: true` and `strictGlobal: true`.
+- `metro.config.js`: applies `withUniwindConfig()` first, Nano Icons next, and `getBundleModeMetroConfig()` last.
+- `patches/`: pins compatibility fixes for Worklets, Metro, and Metro Runtime.
+
+Metro config order matters. After upgrading `react-native-worklets`, `metro`, or `uniwind`,
+retest Metro startup, HMR, splash dismissal, native tabs, and Android bundle mode.
+
+## Validation and CI
+
+```bash
+bun run check
+bun run typecheck
+```
+
+GitHub Actions runs both commands on every push and pull request. New runs cancel older
+runs for the same ref. Outside a Git checkout, use `bun install --ignore-scripts` because
+Lefthook installation needs `.git`.
 
 ## Upgrade
 
@@ -192,5 +266,6 @@ bunx expo install expo@^57.0.0 --fix
 bunx expo-doctor
 ```
 
-Use [Expo SDK 57 docs](https://docs.expo.dev/versions/v57.0.0/) for SDK-specific guidance.
-See [AGENTS.md](./AGENTS.md) for repository conventions.
+Use [Expo SDK 57 docs](https://docs.expo.dev/versions/v57.0.0/) for Expo APIs.
+
+See [AGENTS.md](./AGENTS.md) for task-specific documentation routing.
