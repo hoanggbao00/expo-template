@@ -4,6 +4,7 @@
 assets/                    # Images, fonts, icon source/output
 scripts/                   # Build and repository scripts
 patches/                   # Bun patched dependencies
+plugins/                   # Local Expo config plugins (CommonJS)
 polyfills/                 # Runtime polyfills
 src/
 ├── app/                   # Expo Router routes only; keep thin

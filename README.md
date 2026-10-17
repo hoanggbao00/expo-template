@@ -1,6 +1,6 @@
 # Expo Template
 
-Android-first Expo SDK 57 template for React Native 0.86, React 19.2, and TypeScript 7.
+Android-first Expo SDK 58 template for React Native 0.88, React 19.3, and TypeScript 7.
 New Architecture, Hermes, React Compiler, Expo Router, Uniwind, TanStack Query, Zustand,
 i18next, Reanimated 4, and React Native Worklets bundle mode are configured.
 
@@ -34,7 +34,8 @@ use `bun start` when only Metro needs restarting.
 Run a specific mode explicitly:
 
 ```bash
-APP_VARIANT=development bun run android
+bun run android                   # dev flavor, debug build
+bun run android:prod              # prod flavor, release build
 APP_VARIANT=development bun run ios
 ```
 
@@ -51,6 +52,22 @@ Native identifiers stay in `app.config.ts`, not `.env`. Prebuild bakes them into
 projects. `.env.local` and `.env.production.local` are ignored by Git and may set
 `APP_VARIANT` or other local environment values.
 
+### Android flavors
+
+Android uses one native project for both modes. `plugins/with-android-flavors.js` (applied in
+`app.config.ts`) adds Gradle product flavors with a fixed namespace (`com.hoanggbao.myapp`):
+
+| Flavor | applicationId | Name | Scheme |
+| --- | --- | --- | --- |
+| `dev` | `com.hoanggbao.myapp.dev` | My App (Dev) | `myapp-dev` |
+| `prod` | `com.hoanggbao.myapp` | My App | `myapp` |
+
+Android prebuild output is identical for every `APP_VARIANT`, so switching modes never
+re-prebuilds and both flavors share Gradle caches. `APP_VARIANT` still selects the JS-side
+config (`expo-constants`) at build time; the scripts set it to match the flavor.
+`scripts/run-android.sh` reads `ANDROID_APPLICATION_ID` from `app.config.ts` for `--app-id`,
+so package names live only there. iOS still switches identifiers through `APP_VARIANT` + prebuild.
+
 ## Build
 
 ### Native prebuild
@@ -58,8 +75,7 @@ projects. `.env.local` and `.env.production.local` are ignored by Git and may se
 Generate or update native projects for a mode:
 
 ```bash
-bun run prebuild:android
-bun run prebuild:android:prod
+bun run prebuild:android          # Same output for both flavors
 bun run prebuild:ios
 bun run prebuild:ios:prod
 ```
@@ -83,21 +99,22 @@ Both use `scripts/build-android.sh`. Default mode is production. Override it wit
 ```
 
 The script reads app version and version code from `package.json`, resolves app name from
-`app.config.ts`, selects `APP_VARIANT`, configures Gradle, and signs using the local release
+`app.config.ts`, selects `APP_VARIANT` and the matching flavor task (`assembleProdRelease`,
+`bundleDevRelease`, ...), configures Gradle, and signs using the local release
 keystore configuration. Review that script before using it for shared or public releases.
 
 ## Scripts
 
 ```bash
 bun start                         # Start Metro only
-bun run android                   # Build, install, and run development Android app
+bun run android                   # Build, install, and run dev flavor (debug)
+bun run android:prod              # Build, install, and run prod flavor (release)
 bun run ios                       # Build, install, and run development iOS app
 bun run check                     # Ultracite check
 bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
-bun run prebuild:android          # Development Android prebuild, preserves native changes
-bun run prebuild:android:prod     # Production Android prebuild, preserves native changes
-bun run prebuild:android:clean    # Clean development Android prebuild
+bun run prebuild:android          # Android prebuild (both flavors), preserves native changes
+bun run prebuild:android:clean    # Clean Android prebuild
 bun run prebuild:ios              # Development iOS prebuild, preserves native changes
 bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes
 bun run prebuild:ios:clean        # Clean development iOS prebuild
@@ -111,6 +128,7 @@ bun run build:aab                 # Production AAB
 assets/                    # App icons, images, fonts, SVG icon sources/output
 scripts/                   # Build and repository scripts
 patches/                   # Bun patched dependencies
+plugins/                   # Local Expo config plugins (CommonJS)
 polyfills/                 # Runtime polyfills
 src/
 ├── app/                   # Expo Router routes only; keep route files thin
@@ -189,8 +207,8 @@ Query defaults and global query/mutation error logging.
 Important config locations:
 
 - `app.config.ts`: app name, slug, scheme, bundle IDs, versions, plugins, splash, icon generation.
-- `package.json`: scripts, dependency versions, app versions, patched dependencies.
-- `babel.config.js`: Expo Babel preset and Worklets plugin.
+- `package.json`: scripts, dependency versions, app versions.
+- `babel.config.js`: Expo Babel preset and Worklets plugin (bundle mode).
 - `metro.config.js`: Uniwind, Nano Icons, and Worklets bundle mode integration.
 - `src/global.css`: Uniwind CSS entry.
 - `src/styles/`: colors, fonts, gradients, and custom utilities.
@@ -243,10 +261,10 @@ Worklets to access the full bundle.
 
 - `babel.config.js`: applies `react-native-worklets/plugin` once with `bundleMode: true` and `strictGlobal: true`.
 - `metro.config.js`: applies `withUniwindConfig()` first, Nano Icons next, and `getBundleModeMetroConfig()` last.
-- `patches/`: pins compatibility fixes for Worklets, Metro, and Metro Runtime.
+- `patches/`: Metro, Metro Runtime, and Worklets compatibility fixes (see `docs/development.md`).
 
-Metro config order matters. After upgrading `react-native-worklets`, `metro`, or `uniwind`,
-retest Metro startup, HMR, splash dismissal, native tabs, and Android bundle mode.
+After upgrading `react-native-worklets`, `metro`, or `uniwind`, retest Metro startup, HMR,
+splash dismissal, native tabs, and Android bundle mode.
 
 ## Validation and CI
 
@@ -262,10 +280,10 @@ Lefthook installation needs `.git`.
 ## Upgrade
 
 ```bash
-bunx expo install expo@^57.0.0 --fix
+bunx expo install expo@^58.0.0 --fix
 bunx expo-doctor
 ```
 
-Use [Expo SDK 57 docs](https://docs.expo.dev/versions/v57.0.0/) for Expo APIs.
+Use [Expo SDK 58 docs](https://docs.expo.dev/versions/v58.0.0/) for Expo APIs.
 
 See [AGENTS.md](./AGENTS.md) for task-specific documentation routing.

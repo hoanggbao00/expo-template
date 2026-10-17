@@ -1,0 +1,80 @@
+diff --git a/bundleMode/index.js b/bundleMode/index.js
+index c030cbcd236ccd1401b7b84c8dc9e3354c7e4ba1..4abeb9c87c0da57249855a8ac8ada38519159c4c 100644
+--- a/bundleMode/index.js
++++ b/bundleMode/index.js
+@@ -9,6 +9,23 @@ const prepareBundleModePolyfillPath = path.join(
+ );
+ 
+ const workletsPackageName = 'react-native-worklets';
++// Patched: the shim loads the real react-native through this specifier so resolvers
++// that remap 'react-native' (e.g. uniwind -> uniwind/components) cannot loop it
++// back into the shim (software-mansion/react-native-reanimated#9817).
++const realReactNativeModuleName = path.posix.join(
++  workletsPackageName,
++  'bundleMode',
++  'realReactNative'
++);
++const realReactNativeIndexSuffix = path.join('react-native', 'index.js');
++
++function resolveRealReactNative(/** @type {any} */ context, /** @type {any} */ platform) {
++  return context.resolveRequest(
++    { ...context, originModulePath: reactNativeShimPath },
++    'react-native',
++    platform
++  );
++}
+ const workletsDirPath = path.posix.join(workletsPackageName, '.worklets');
+ const workletsSrcEntryPath = path.posix.join(
+   workletsPackageName,
+@@ -32,17 +49,24 @@ function bundleModeResolveRequest(
+     const fullModuleName = path.join(workletsPackageParentDir, moduleName);
+     return { type: 'sourceFile', filePath: fullModuleName };
+   }
+-  if (
+-    moduleName === 'react-native' &&
+-    context.originModulePath !== reactNativeShimPath
+-  ) {
+-    return { type: 'sourceFile', filePath: reactNativeShimPath };
++  if (moduleName === realReactNativeModuleName) {
++    return resolveRealReactNative(context, platform);
+   }
+-  return (userConfigResolveRequest || context.resolveRequest)(
++  const resolution = (userConfigResolveRequest || context.resolveRequest)(
+     context,
+     moduleName,
+     platform
+   );
++  // Only the real react-native goes through the shim; a user resolver's replacement
++  // (e.g. uniwind/components) is kept and reaches the shim via its own import.
++  if (
++    moduleName === 'react-native' &&
++    resolution?.type === 'sourceFile' &&
++    resolution.filePath.endsWith(realReactNativeIndexSuffix)
++  ) {
++    return { type: 'sourceFile', filePath: reactNativeShimPath };
++  }
++  return resolution;
+ }
+ 
+ /** Use in React Native Community projects. */
+@@ -61,6 +85,9 @@ const bundleModeMetroConfig = {
+         const fullModuleName = path.join(workletsPackageParentDir, moduleName);
+         return { type: 'sourceFile', filePath: fullModuleName };
+       }
++      if (moduleName === realReactNativeModuleName) {
++        return resolveRealReactNative(context, platform);
++      }
+       if (
+         moduleName === 'react-native' &&
+         context.originModulePath !== reactNativeShimPath
+diff --git a/bundleMode/shims/reactNativeShim.js b/bundleMode/shims/reactNativeShim.js
+index c711083ce54249f48e60f392ddd832a856eba039..289e0bcf45afc3a852a5408dfe5a6c6149974a11 100644
+--- a/bundleMode/shims/reactNativeShim.js
++++ b/bundleMode/shims/reactNativeShim.js
+@@ -18,4 +18,5 @@ if (
+   );
+ }
+ 
+-module.exports = require('react-native');
++// Patched: see realReactNativeModuleName in ../index.js.
++module.exports = require('react-native-worklets/bundleMode/realReactNative');

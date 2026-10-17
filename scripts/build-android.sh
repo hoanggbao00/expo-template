@@ -156,14 +156,23 @@ choose_gradle_jvm_args() {
 TOTAL_MEMORY_MB="$(detect_total_memory_mb)"
 GRADLE_JVM_ARGS="$(choose_gradle_jvm_args "$TOTAL_MEMORY_MB")"
 
-if [ "$BUILD_FORMAT" == "aab" ]; then
-    GRADLE_TASK="bundleRelease"
-    OUTPUT_EXT="aab"
-    INTERNAL_OUTPUT_PATH="$APP_DIR/build/outputs/bundle/release"
+# Gradle product flavors (plugins/with-android-flavors.js): one native project serves both variants.
+if [ "$APP_VARIANT" == "production" ]; then
+    FLAVOR="prod"
+    FLAVOR_TASK="Prod"
 else
-    GRADLE_TASK="assembleRelease"
+    FLAVOR="dev"
+    FLAVOR_TASK="Dev"
+fi
+
+if [ "$BUILD_FORMAT" == "aab" ]; then
+    GRADLE_TASK="bundle${FLAVOR_TASK}Release"
+    OUTPUT_EXT="aab"
+    INTERNAL_OUTPUT_PATH="$APP_DIR/build/outputs/bundle/${FLAVOR}Release"
+else
+    GRADLE_TASK="assemble${FLAVOR_TASK}Release"
     OUTPUT_EXT="apk"
-    INTERNAL_OUTPUT_PATH="$APP_DIR/build/outputs/apk/release"
+    INTERNAL_OUTPUT_PATH="$APP_DIR/build/outputs/apk/${FLAVOR}/release"
 fi
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -179,7 +188,7 @@ echo -e "${GREEN}📋 BUILD SUMMARY${NC}"
 echo -e "${GREEN}==========================================${NC}"
 echo -e "📂 Target Dir : ${CYAN}$ANDROID_DIR${NC}"
 echo -e "📱 App Name   : ${CYAN}$APP_DISPLAY_NAME${NC}"
-echo -e "🏷️  Variant    : ${CYAN}$APP_VARIANT${NC}"
+echo -e "🏷️  Variant    : ${CYAN}$APP_VARIANT ($GRADLE_TASK)${NC}"
 echo -e "📦 Build Type : ${CYAN}$BUILD_FORMAT${NC}"
 echo -e "📄 Output     : $FINAL_FILENAME"
 echo -e "🔢 App Version: ${CYAN}$APP_VERSION ($APP_VERSION_CODE)${NC}"
@@ -282,7 +291,7 @@ fi
 
 # --- STEP 3 ---
 echo -n -e "${CYAN}4️⃣  Step 4/5: Moving Artifact... ${NC}"
-SOURCE_FILE="$INTERNAL_OUTPUT_PATH/app-release.$OUTPUT_EXT"
+SOURCE_FILE="$INTERNAL_OUTPUT_PATH/app-${FLAVOR}-release.$OUTPUT_EXT"
 if [ -f "$SOURCE_FILE" ]; then
     mv "$SOURCE_FILE" "$DEST_FILE"
     echo -e "${GREEN}DONE${NC}"

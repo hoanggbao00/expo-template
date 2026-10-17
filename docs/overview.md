@@ -1,11 +1,11 @@
 # Overview
 
-Expo SDK 57 template for Android-first React Native development.
+Expo SDK 58 template for Android-first React Native development.
 
 ## Runtime
 
-- Expo SDK 57
-- React Native 0.86.x, React 19.2.x
+- Expo SDK 58
+- React Native 0.88.x, React 19.3.x
 - TypeScript 7 (intentional; do not downgrade for Expo checks)
 - New Architecture
 - Hermes

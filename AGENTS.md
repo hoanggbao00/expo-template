@@ -4,7 +4,7 @@ Short routing context for agents. Load task-specific docs only when needed.
 
 ## Project baseline
 
-Expo SDK 57, React Native 0.86.x, React 19.2.x, New Architecture, React Compiler, and Expo Router.
+Expo SDK 58, React Native 0.88.x, React 19.3.x, New Architecture, React Compiler, and Expo Router.
 Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not NativeWind.
 
 ## Read by task
@@ -22,7 +22,7 @@ Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not Native
 ## Non-negotiable rules
 
 - Use `bun` / `bun x`, never npm or yarn.
-- Use Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/.
+- Use Expo SDK 58 docs: https://docs.expo.dev/versions/v58.0.0/.
 - Do not add `@react-navigation/*`.
 - Import `panelui-native` from subpaths (`panelui-native/components/<slug>`), never the root; Metro does not tree-shake.
 - Add i18n strings to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.

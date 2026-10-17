@@ -1,4 +1,5 @@
 import { ms } from "@/utils/time";
+import * as Application from "expo-application";
 import Constants from "expo-constants";
 import { Dimensions, Platform } from "react-native";
 
@@ -10,11 +11,8 @@ export const IS_ANDROID = Platform.OS === "android";
 
 // App Constants
 export const APP_NAME = Constants.expoConfig?.name ?? "Unknown";
-export const APP_BUNDLE_IDENTIFIER =
-  Platform.select({
-    ios: Constants.expoConfig?.ios?.bundleIdentifier,
-    android: Constants.expoConfig?.android?.package,
-  }) ?? "Unknown";
+// Native value: Android flavors add the `.dev` suffix after the config's fixed package.
+export const APP_BUNDLE_IDENTIFIER = Application.applicationId ?? "Unknown";
 export const APP_VERSION =
   Platform.select({
     ios: Constants.expoConfig?.ios?.version,

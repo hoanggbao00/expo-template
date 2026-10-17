@@ -13,12 +13,12 @@
 bun install
 bun start
 bun run android
+bun run android:prod
 bun run ios
 bun run check
 bun run fix
 bun run typecheck
 bun run prebuild:android
-bun run prebuild:android:prod
 bun run prebuild:ios
 bun run prebuild:ios:prod
 bun run build:apk
@@ -43,10 +43,13 @@ Outside a git checkout, use `bun install --ignore-scripts`; `lefthook install` n
 
 ## Worklets bundle mode
 
-Enabled to lower Android memory use with Hermes + Reanimated.
+Enabled: worklets run against the full bundle (Hermes bytecode, any library usable in
+worklets, lower memory).
 
 - `babel.config.js`: `react-native-worklets/plugin` with `bundleMode: true`
 - `metro.config.js`: `withUniwindConfig()` first, `getBundleModeMetroConfig()` last
+- `package.json` `overrides` pins a single `metro@0.87.1` so the Metro patch reaches every copy
+  (Uniwind's `metro: *` peer otherwise keeps a stale hoisted version)
 
 ## Patches
 
@@ -54,16 +57,18 @@ Bun applies `patches/` on install through `patchedDependencies` in `package.json
 
 | Package | Why |
 | --- | --- |
-| `react-native-worklets@0.10.4` | Bundle mode + Uniwind resolver remap compatibility |
-| `metro@0.84.4` | Stable SHA-1 for generated `.worklets/` modules |
-| `metro-runtime@0.84.4` | HMR propagation and `metroRequire.getModules` for bundle mode |
+| `uniwind@1.12.2` | Proxy RN 0.88 exports (`AssetRegistry`, etc.) through Uniwind's `react-native` remap; drop once [uniwind#737](https://github.com/uni-stack/uniwind/issues/737) ships |
+| `metro@0.87.1` | Bundle mode: stable SHA-1 for generated `.worklets/` modules (upstream Worklets patch) |
+| `metro-runtime@0.87.1` | Bundle mode: HMR updates reach Worklet runtimes (upstream Worklets patch) |
+| `react-native-worklets@0.13.0` | Bundle mode + Uniwind: route only the real `react-native` through the shim, which loads it via a private specifier, so the Uniwind remap keeps working without a require cycle ([reanimated#9817](https://github.com/software-mansion/react-native-reanimated/issues/9817)) |
 
-Refresh with `bun patch <package>` after upgrading a patched package.
+Refresh with `bun patch <package>` after upgrading a patched package. Stop Metro first:
+Uniwind regenerates `node_modules/uniwind/uniwind.css`, which must not end up in the patch.
 
 ## Upgrade
 
 ```bash
-bunx expo install expo@^57.0.0 --fix
+bunx expo install expo@^58.0.0 --fix
 bunx expo-doctor
 ```
 

@@ -13,9 +13,12 @@ Native identifiers stay in `app.config.ts`, not `.env`, because prebuild bakes t
 native projects. Use `.env.local` or `.env.production.local` only for selecting runtime mode
 and non-identity environment values.
 
+Android maps modes to Gradle product flavors (`dev`, `prod`) in one native project; see
+`plugins/with-android-flavors.js`. iOS still switches identifiers through prebuild.
+
 ```bash
-APP_VARIANT=development bun run android
-APP_VARIANT=production bun run prebuild:android:prod
+bun run android                   # dev flavor
+bun run android:prod              # prod flavor
 APP_VARIANT=production bun run prebuild:ios:prod
 ```
 
