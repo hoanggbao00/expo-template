@@ -18,6 +18,7 @@ bun run ios
 bun run check
 bun run fix
 bun run typecheck
+bun run test
 bun run prebuild:android
 bun run prebuild:ios
 bun run prebuild:ios:prod
@@ -27,9 +28,9 @@ bun run build:aab
 
 ## Validation
 
-Run `bun run check` and `bun run typecheck` before finishing code changes.
+Run `bun run check`, `bun run typecheck`, and `bun run test` before finishing code changes.
 
-GitHub Actions runs both checks on push and pull request. New runs cancel older runs for the same ref.
+GitHub Actions runs all three checks on push and pull request. New runs cancel older runs for the same ref.
 
 ## Native changes
 
@@ -73,3 +74,7 @@ bunx expo-doctor
 ```
 
 TypeScript 7 is intentional. Do not downgrade it to satisfy Expo checks.
+
+## Tests
+
+`bun test` runs `*.test.ts` files next to the code they cover. `test/setup.ts` (preloaded via `bunfig.toml`) defines `__DEV__` and mocks `react-native-mmkv` with an in-memory map. Test files are type-checked by `tsconfig.test.json` so Bun globals (e.g. `Headers`) stay out of app code. Tests cover plain logic only; anything that renders React Native components needs a real RN test environment such as `jest-expo`.

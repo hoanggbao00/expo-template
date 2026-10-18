@@ -11,4 +11,4 @@
 5. Add translation keys to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
 6. Use Expo SDK 58 docs for Expo APIs.
 7. Prefer existing dependencies and platform primitives. Do not add `@react-navigation/*`.
-8. Run `bun run check` and `bun run typecheck` after changes.
+8. Run `bun run check`, `bun run typecheck`, and `bun run test` after changes.
