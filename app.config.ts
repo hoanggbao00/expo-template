@@ -81,7 +81,6 @@ const expoConfig: ExpoConfig = {
     ],
     "expo-font",
     "expo-image",
-    "expo-localization",
     "expo-router",
     "expo-status-bar",
     [

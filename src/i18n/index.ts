@@ -1,31 +1,27 @@
-import { LANGUAGES, type LanguageCode } from "@/i18n/languages";
+import { DEFAULT_LANGUAGE, isLanguageCode, LANGUAGES, type LanguageCode } from "@/i18n/languages";
 import { resources } from "@/i18n/locales/resources";
-import { getAndSetInitialLanguage } from "@/i18n/utils";
-import { updatePreferences } from "@/state/persisted";
+import { getPreferences, updatePreferences } from "@/state/persisted";
 import i18next, { type i18n as I18nInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
-import { I18nManager } from "react-native";
+
+// Stored preference wins; anything missing or unsupported falls back to English.
+const getInitialLanguage = (): LanguageCode => {
+  const { language } = getPreferences();
+  return isLanguageCode(language) ? language : DEFAULT_LANGUAGE;
+};
 
 export const i18n: I18nInstance = i18next.createInstance();
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: getAndSetInitialLanguage(),
-  fallbackLng: "en",
+  lng: getInitialLanguage(),
+  fallbackLng: DEFAULT_LANGUAGE,
   supportedLngs: LANGUAGES.map((language) => language.code),
   defaultNS: "common",
   interpolation: { escapeValue: false },
 });
 
 export const changeAppLanguage = async (language: LanguageCode): Promise<void> => {
-  const lang = LANGUAGES.find((lang) => lang.code === language);
-  const isRTL = lang?.rtl ?? false;
-
-  if (isRTL !== I18nManager.isRTL) {
-    I18nManager.allowRTL(isRTL);
-  }
-
-  updatePreferences({ language, isRTL });
-
+  updatePreferences({ language });
   await i18n.changeLanguage(language);
 };

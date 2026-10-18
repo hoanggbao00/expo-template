@@ -1,9 +1,9 @@
 import { SafeAreaView, Text, View } from "@/components/tw";
 import { Spinner } from "@/components/ui/spinner";
-import { useAppTranslation } from "@/i18n/use-app-translation";
+import { useTranslation } from "react-i18next";
 
 export function HomeScreen() {
-  const { t } = useAppTranslation("home");
+  const { t } = useTranslation("home");
 
   return (
     <SafeAreaView className="flex-1 flex-center bg-card">
