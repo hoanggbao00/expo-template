@@ -32,6 +32,14 @@ export const usePreferencesStore = create<State & Action>()(
       name: STORAGE_KEY,
       storage: createJSONStorage(() => mmkvStorage),
       partialize: (state) => ({ preferences: state.preferences }),
+      // Default merge is shallow: fill fields added since last save, drop fields that were removed.
+      merge: (persisted, current) => {
+        const stored: Partial<Preferences> = (persisted as Partial<State> | undefined)?.preferences ?? {};
+        const preferences = Object.fromEntries(
+          Object.entries(current.preferences).map(([key, value]) => [key, stored[key as keyof Preferences] ?? value])
+        ) as Preferences;
+        return { ...current, preferences };
+      },
       onRehydrateStorage: () => (state) => state?.setIsHydrated(true),
     }
   )
