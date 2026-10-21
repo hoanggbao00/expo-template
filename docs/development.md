@@ -58,7 +58,6 @@ Bun applies `patches/` on install through `patchedDependencies` in `package.json
 
 | Package | Why |
 | --- | --- |
-| `uniwind@1.12.2` | Proxy RN 0.88 exports (`AssetRegistry`, etc.) through Uniwind's `react-native` remap; drop once [uniwind#737](https://github.com/uni-stack/uniwind/issues/737) ships |
 | `metro@0.87.1` | Bundle mode: stable SHA-1 for generated `.worklets/` modules (upstream Worklets patch) |
 | `metro-runtime@0.87.1` | Bundle mode: HMR updates reach Worklet runtimes (upstream Worklets patch) |
 | `react-native-worklets@0.13.0` | Bundle mode + Uniwind: route only the real `react-native` through the shim, which loads it via a private specifier, so the Uniwind remap keeps working without a require cycle ([reanimated#9817](https://github.com/software-mansion/react-native-reanimated/issues/9817)) |
