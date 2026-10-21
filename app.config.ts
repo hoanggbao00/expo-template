@@ -82,7 +82,7 @@ const expoConfig: ExpoConfig = {
     "expo-font",
     "expo-image",
     "expo-router",
-    "expo-status-bar",
+    "@rbayuokt/expo-adaptive-status-bar",
     [
       "expo-splash-screen",
       {

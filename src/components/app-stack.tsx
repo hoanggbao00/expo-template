@@ -1,5 +1,5 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { DarkTheme, DefaultTheme, Stack, type Theme, ThemeProvider } from "expo-router";
+import { DarkTheme, DefaultTheme, Stack, type Theme, ThemeProvider as StackThemeProvider } from "expo-router";
 import { useUniwind } from "uniwind";
 
 export default function AppStack() {
@@ -20,8 +20,8 @@ export default function AppStack() {
   };
 
   return (
-    <ThemeProvider value={navigationTheme}>
+    <StackThemeProvider value={navigationTheme}>
       <Stack screenOptions={{ headerShown: false }} />
-    </ThemeProvider>
+    </StackThemeProvider>
   );
 }
