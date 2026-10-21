@@ -11,6 +11,7 @@
 #   2. ./scripts/build-android.sh --dev          (development APK)
 #   3. ./scripts/build-android.sh --aab          (production AAB)
 #   4. ./scripts/build-android.sh --dev --aab    (development AAB)
+#   5. ./scripts/build-android.sh --preview      (preview APK)
 # ==============================================================================
 
 # =========================================================
@@ -51,6 +52,7 @@ for arg in "$@"; do
     --aab) BUILD_FORMAT="aab" ;;
     --apk) BUILD_FORMAT="apk" ;;
     --dev|--development) CLI_APP_VARIANT="development" ;;
+    --preview) CLI_APP_VARIANT="preview" ;;
     --prod|--production) CLI_APP_VARIANT="production" ;;
   esac
 done
@@ -79,7 +81,7 @@ read_package_json_field() {
 }
 
 read_app_config_field() {
-  bun -e "import config from './app.config.ts'; const mode=process.argv[1]; const name=config.name; if(!name) process.exit(2); if(mode==='display') { process.stdout.write(name); } else { const pascal=name.split(/[\\s\\-_]+/).filter(Boolean).map((w)=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(''); if(!pascal) process.exit(2); process.stdout.write(pascal); }" "$1"
+  bun -e "import { APP_NAME as name } from './app.config.ts'; const mode=process.argv[1]; if(!name) process.exit(2); if(mode==='display') { process.stdout.write(name); } else { const pascal=name.split(/[\\s\\-_]+/).filter(Boolean).map((w)=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(''); if(!pascal) process.exit(2); process.stdout.write(pascal); }" "$1"
 }
 
 APP_DISPLAY_NAME="$(cd "$ROOT_DIR" && read_app_config_field display)" || {
@@ -107,7 +109,7 @@ APP_VERSION_CODE="$(read_package_json_field androidVersionCode)" || {
 # =========================================================
 for arg in "$@"; do
     case "$arg" in
-        --aab|--apk|--dev|--development|--prod|--production) ;;
+        --aab|--apk|--dev|--development|--preview|--prod|--production) ;;
         *) echo -e "${RED}❌ Error: Unknown argument: $arg${NC}"; exit 1 ;;
     esac
 done
@@ -156,14 +158,12 @@ choose_gradle_jvm_args() {
 TOTAL_MEMORY_MB="$(detect_total_memory_mb)"
 GRADLE_JVM_ARGS="$(choose_gradle_jvm_args "$TOTAL_MEMORY_MB")"
 
-# Gradle product flavors (plugins/with-android-flavors.js): one native project serves both variants.
-if [ "$APP_VARIANT" == "production" ]; then
-    FLAVOR="prod"
-    FLAVOR_TASK="Prod"
-else
-    FLAVOR="dev"
-    FLAVOR_TASK="Dev"
-fi
+# Gradle product flavors (plugins/with-android-flavors.js): one native project serves every variant.
+case "$APP_VARIANT" in
+    production) FLAVOR="prod"; FLAVOR_TASK="Prod" ;;
+    preview) FLAVOR="preview"; FLAVOR_TASK="Preview" ;;
+    *) FLAVOR="dev"; FLAVOR_TASK="Dev" ;;
+esac
 
 if [ "$BUILD_FORMAT" == "aab" ]; then
     GRADLE_TASK="bundle${FLAVOR_TASK}Release"

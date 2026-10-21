@@ -26,7 +26,7 @@ Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not Native
 - Do not add `@react-navigation/*`.
 - Import `panelui-native` from subpaths (`panelui-native/components/<slug>`), never the root; Metro does not tree-shake.
 - Add i18n strings to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
-- Keep native identifiers in `app.config.ts`.
+- Keep native identifiers in `app.config.ts` (per-variant overrides on top of the `app.json` base).
 - `metro.config.js` order matters: `withUniwindConfig()` first, bundle-mode config last.
 - `react-native-worklets`, `metro`, and `uniwind` upgrades require native/runtime retesting.
 

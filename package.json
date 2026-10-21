@@ -21,6 +21,7 @@
     "prebuild:ios:clean": "APP_VARIANT=development expo prebuild --platform ios",
     "prebuild:ios:clean:prod": "APP_VARIANT=production expo prebuild --platform ios",
     "android": "./scripts/run-android.sh",
+    "android:preview": "./scripts/run-android.sh --preview",
     "android:prod": "./scripts/run-android.sh --prod",
     "ios": "APP_VARIANT=development expo run:ios",
     "check": "ultracite check",

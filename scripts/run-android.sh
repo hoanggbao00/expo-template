@@ -3,6 +3,7 @@
 # app.config.ts, so package names are never duplicated in package.json or .env.
 #
 #   ./scripts/run-android.sh            # dev flavor, debug build (Metro)
+#   ./scripts/run-android.sh --preview  # preview flavor, release build
 #   ./scripts/run-android.sh --prod     # prod flavor, release build
 #   Extra args are passed to `expo run:android` (e.g. --device, --no-bundler).
 
@@ -18,6 +19,7 @@ EXPO_ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --prod|--production) APP_VARIANT="production"; VARIANT="prodRelease" ;;
+    --preview) APP_VARIANT="preview"; VARIANT="previewRelease" ;;
     --dev|--development) APP_VARIANT="development"; VARIANT="devDebug" ;;
     *) EXPO_ARGS+=("$arg") ;;
   esac

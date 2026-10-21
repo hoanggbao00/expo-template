@@ -29,7 +29,7 @@ use `<Icon name="..." />` from `@/components/tw`.
 - Prebuild regenerates changed sets and links the font natively.
 - `withNanoIcons()` in `metro.config.js` gives dev HMR: edit an SVG, Metro rebuilds and pushes the font.
 - Metro plugin is dev-only. Run prebuild before release builds or icons render blank.
-- Do not hand-edit generated output. Register new sets in `app.config.ts` `iconSets`.
+- Do not hand-edit generated output. Register new sets in `app.json` (`react-native-nano-icons` plugin `iconSets`).
 
 ## PanelUI
 

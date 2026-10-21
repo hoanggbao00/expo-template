@@ -1,121 +1,78 @@
-import type { ExpoConfig } from "expo/config";
+import type { ConfigContext, ExpoConfig } from "expo/config";
+import appJson from "./app.json";
 import packageJson from "./package.json";
 import { withAndroidFlavors } from "./plugins/with-android-flavors";
 
-// Native identifiers (name/slug/bundle id/scheme) must stay in source, not .env:
-// they bake into the native project at prebuild time, so an out-of-sync .env
-// would silently diverge from the installed binary. Only APP_VARIANT is env-driven.
-const IS_PRODUCTION = process.env.APP_VARIANT === "production";
+// app.json holds the static base (production identity). This file only applies per-variant
+// overrides selected by APP_VARIANT. Identifiers stay in source, not .env: prebuild bakes
+// them into the native project, so an out-of-sync .env would diverge from the installed binary.
+type AppVariant = "development" | "preview" | "production";
 
-const BASE_APP_NAME = "My App";
-const BASE_APP_SLUG = "my-app";
-const BASE_BUNDLE_IDENTIFIER = "com.hoanggbao.myapp";
-const BASE_APP_SCHEME = "myapp";
+interface VariantConfig {
+  /** Gradle product flavor name, e.g. `dev` -> `assembleDevRelease`. */
+  flavor: string;
+  nameSuffix: string;
+  idSuffix: string;
+}
 
-// Dev build gets a distinct name/id/scheme so it can be installed alongside production.
-const DEV_APP_NAME = `${BASE_APP_NAME} (Dev)`;
-const DEV_ID_SUFFIX = ".dev";
-const DEV_APP_SCHEME = `${BASE_APP_SCHEME}-dev`;
-
-const APP_NAME = IS_PRODUCTION ? BASE_APP_NAME : DEV_APP_NAME;
-const APP_SLUG = IS_PRODUCTION ? BASE_APP_SLUG : `${BASE_APP_SLUG}-dev`;
-const APP_BUNDLE_IDENTIFIER = IS_PRODUCTION ? BASE_BUNDLE_IDENTIFIER : `${BASE_BUNDLE_IDENTIFIER}${DEV_ID_SUFFIX}`;
-const APP_SCHEME = IS_PRODUCTION ? BASE_APP_SCHEME : DEV_APP_SCHEME;
-
-// Installed Android applicationId (package + flavor suffix). Read by scripts/run-android.sh.
-export const ANDROID_APPLICATION_ID = IS_PRODUCTION
-  ? BASE_BUNDLE_IDENTIFIER
-  : `${BASE_BUNDLE_IDENTIFIER}${DEV_ID_SUFFIX}`;
-
-const AndroidVersionCode = packageJson.androidVersionCode || 1;
-const AndroidVersion = packageJson.androidVersion || "1.0.0";
-const IosVersion = packageJson.iosVersion || "1.0.0";
-const IosBuildNumber = packageJson.iosBuildNumber || 1;
-
-const expoConfig: ExpoConfig = {
-  name: APP_NAME,
-  slug: APP_SLUG,
-  version: AndroidVersion,
-  orientation: "portrait",
-  icon: "./assets/icon-app/icon.png",
-  scheme: APP_SCHEME,
-  userInterfaceStyle: "automatic",
-  ios: {
-    icon: "./assets/expo.icon",
-    version: IosVersion,
-    buildNumber: String(IosBuildNumber),
-    supportsTablet: true,
-    bundleIdentifier: APP_BUNDLE_IDENTIFIER,
-    config: {
-      usesNonExemptEncryption: false,
-    },
-    infoPlist: {
-      CFBundleDisplayName: APP_NAME,
-    },
-  },
-  android: {
-    adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/icon-app/android-icon-foreground.png",
-      backgroundImage: "./assets/icon-app/android-icon-background.png",
-      monochromeImage: "./assets/icon-app/android-icon-monochrome.png",
-    },
-    predictiveBackGestureEnabled: false,
-    // Fixed across variants: the dev/prod split lives in Gradle product flavors
-    // (see withAndroidFlavors), so switching variants never re-prebuilds Android.
-    package: BASE_BUNDLE_IDENTIFIER,
-    versionCode: AndroidVersionCode,
-  },
-  plugins: [
-    [
-      "expo-build-properties",
-      {
-        android: {
-          minSdkVersion: 28, // Android 9
-          buildArchs: ["arm64-v8a"],
-          // Only affects RN <Image>; expo-image ships its own GIF/WebP decoders.
-          gifEnabled: false,
-          webpEnabled: false,
-        },
-      },
-    ],
-    "expo-font",
-    "expo-image",
-    "expo-router",
-    "@rbayuokt/expo-adaptive-status-bar",
-    [
-      "expo-splash-screen",
-      {
-        backgroundColor: "#208AEF",
-        android: {
-          image: "./assets/icon-app/splash-icon.png",
-          imageWidth: 76,
-        },
-      },
-    ],
-    [
-      // https://github.com/software-mansion-labs/react-native-nano-icons
-      "react-native-nano-icons",
-      {
-        iconSets: [
-          {
-            inputDir: "./assets/icons/common",
-            outputDir: "./assets/icons/output",
-          },
-        ],
-      },
-    ],
-  ],
-  experiments: {
-    typedRoutes: true,
-    reactCompiler: true,
-  },
+const VARIANTS: Record<AppVariant, VariantConfig> = {
+  development: { flavor: "dev", nameSuffix: " (Dev)", idSuffix: ".dev" },
+  preview: { flavor: "preview", nameSuffix: " (Preview)", idSuffix: ".preview" },
+  production: { flavor: "prod", nameSuffix: "", idSuffix: "" },
 };
 
-export default withAndroidFlavors(expoConfig, {
-  projectName: BASE_APP_NAME,
-  flavors: [
-    { name: "dev", appName: DEV_APP_NAME, scheme: DEV_APP_SCHEME, applicationIdSuffix: DEV_ID_SUFFIX },
-    { name: "prod", appName: BASE_APP_NAME, scheme: BASE_APP_SCHEME },
-  ],
-});
+// Defaults to development so a missing variable never produces the production identity.
+const APP_VARIANT = (process.env.APP_VARIANT ?? "development") as AppVariant;
+if (!(APP_VARIANT in VARIANTS)) {
+  throw new Error(`Invalid APP_VARIANT "${APP_VARIANT}". Expected: ${Object.keys(VARIANTS).join(" | ")}`);
+}
+
+/** Suffix without the leading dot, e.g. `dev`; empty for production. */
+const tagOf = (variant: AppVariant) => VARIANTS[variant].idSuffix.slice(1);
+
+const getAppName = (name: string, variant: AppVariant) => `${name}${VARIANTS[variant].nameSuffix}`;
+const getUniqueIdentifier = (id: string, variant: AppVariant) => `${id}${VARIANTS[variant].idSuffix}`;
+const getSlug = (slug: string, variant: AppVariant) => (tagOf(variant) ? `${slug}-${tagOf(variant)}` : slug);
+/** Dash instead of dot so it stays a valid URI scheme: `myapp-dev`, `myapp-preview`. */
+const getScheme = (scheme: string, variant: AppVariant) => (tagOf(variant) ? `${scheme}-${tagOf(variant)}` : scheme);
+
+// Read by scripts/run-android.sh and scripts/build-android.sh, which load this file without Expo's config context.
+export const APP_NAME = getAppName(appJson.expo.name, APP_VARIANT);
+export const ANDROID_APPLICATION_ID = getUniqueIdentifier(appJson.expo.android.package, APP_VARIANT);
+
+export default ({ config }: ConfigContext): ExpoConfig => {
+  // config is app.json's `expo` object; the cast restores its non-optional fields.
+  const { name, slug, scheme, ios } = config as typeof appJson.expo;
+
+  return withAndroidFlavors(
+    {
+      ...config,
+      name: getAppName(name, APP_VARIANT),
+      slug: getSlug(slug, APP_VARIANT),
+      scheme: getScheme(scheme, APP_VARIANT),
+      version: packageJson.androidVersion || "1.0.0",
+      ios: {
+        ...config.ios,
+        version: packageJson.iosVersion || "1.0.0",
+        buildNumber: String(packageJson.iosBuildNumber || 1),
+        bundleIdentifier: getUniqueIdentifier(ios.bundleIdentifier, APP_VARIANT),
+        infoPlist: { ...config.ios?.infoPlist, CFBundleDisplayName: getAppName(name, APP_VARIANT) },
+      },
+      android: {
+        ...config.android,
+        // Fixed across variants: the split lives in Gradle product flavors (see withAndroidFlavors),
+        // so switching variants never re-prebuilds Android.
+        versionCode: packageJson.androidVersionCode || 1,
+      },
+    },
+    {
+      projectName: name,
+      flavors: (Object.keys(VARIANTS) as AppVariant[]).map((variant) => ({
+        name: VARIANTS[variant].flavor,
+        appName: getAppName(name, variant),
+        scheme: getScheme(scheme, variant),
+        applicationIdSuffix: VARIANTS[variant].idSuffix || undefined,
+      })),
+    }
+  );
+};

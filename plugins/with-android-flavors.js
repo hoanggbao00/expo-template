@@ -29,6 +29,8 @@ const {
 const MARKER = "// @generated with-android-flavors";
 // biome-ignore lint/suspicious/noTemplateCurlyInString: Gradle manifest placeholder, not JS.
 const SCHEME_PLACEHOLDER = "${appScheme}";
+// From the marker through the closing `    }` of productFlavors (flavor bodies close at 8 spaces).
+const GENERATED_BLOCK_REGEX = /^ {4}\/\/ @generated with-android-flavors\n[\s\S]*?\n {4}\}\n/m;
 const PACKAGING_OPTIONS_REGEX = /^(\s*)packagingOptions \{/m;
 const ROOT_PROJECT_NAME_REGEX = /^rootProject\.name = .*$/m;
 const SINGLE_QUOTE_REGEX = /'/g;
@@ -65,12 +67,11 @@ function escapeXml(value) {
 /** @type {FlavorsPlugin} */
 const withFlavorsGradle = (config, { flavors }) =>
   withAppBuildGradle(config, (cfg) => {
-    if (!cfg.modResults.contents.includes(MARKER)) {
-      cfg.modResults.contents = cfg.modResults.contents.replace(
-        PACKAGING_OPTIONS_REGEX,
-        (match) => `${renderFlavors(flavors)}${match}`
-      );
-    }
+    const block = renderFlavors(flavors);
+    // Replace a previous block so `--no-clean` prebuilds pick up added or changed flavors.
+    cfg.modResults.contents = cfg.modResults.contents.includes(MARKER)
+      ? cfg.modResults.contents.replace(GENERATED_BLOCK_REGEX, block)
+      : cfg.modResults.contents.replace(PACKAGING_OPTIONS_REGEX, (match) => `${block}${match}`);
     return cfg;
   });
 

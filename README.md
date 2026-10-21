@@ -35,18 +35,27 @@ Run a specific mode explicitly:
 
 ```bash
 bun run android                   # dev flavor, debug build
+bun run android:preview           # preview flavor, release build
 bun run android:prod              # prod flavor, release build
 APP_VARIANT=development bun run ios
 ```
 
 ## App modes
 
-`APP_VARIANT` controls branding and native identifiers in `app.config.ts`.
+Config is split in two files:
 
-| Mode | Value | Purpose |
-| --- | --- | --- |
-| Development | `development` | Dev app name, slug, scheme, and bundle ID; installs beside production |
-| Production | `production` | Release app name, slug, scheme, and bundle ID |
+- `app.json`: static base (production identity, icons, plugins, experiments).
+- `app.config.ts`: receives `app.json` and overrides per-variant values selected by `APP_VARIANT`
+  (missing value defaults to `development`; an unknown value throws).
+
+| Mode | Value | Name | ID suffix | Scheme |
+| --- | --- | --- | --- | --- |
+| Development | `development` | My App (Dev) | `.dev` | `myapp-dev` |
+| Preview | `preview` | My App (Preview) | `.preview` | `myapp-preview` |
+| Production | `production` | My App | none | `myapp` |
+
+Every mode installs side by side. Inspect the resolved config with
+`APP_VARIANT=preview bun x expo config`.
 
 Native identifiers stay in `app.config.ts`, not `.env`. Prebuild bakes them into native
 projects. `.env.local` and `.env.production.local` are ignored by Git and may set
@@ -54,16 +63,17 @@ projects. `.env.local` and `.env.production.local` are ignored by Git and may se
 
 ### Android flavors
 
-Android uses one native project for both modes. `plugins/with-android-flavors.js` (applied in
+Android uses one native project for every mode. `plugins/with-android-flavors.js` (applied in
 `app.config.ts`) adds Gradle product flavors with a fixed namespace (`com.hoanggbao.myapp`):
 
 | Flavor | applicationId | Name | Scheme |
 | --- | --- | --- | --- |
 | `dev` | `com.hoanggbao.myapp.dev` | My App (Dev) | `myapp-dev` |
+| `preview` | `com.hoanggbao.myapp.preview` | My App (Preview) | `myapp-preview` |
 | `prod` | `com.hoanggbao.myapp` | My App | `myapp` |
 
 Android prebuild output is identical for every `APP_VARIANT`, so switching modes never
-re-prebuilds and both flavors share Gradle caches. `APP_VARIANT` still selects the JS-side
+re-prebuilds and all flavors share Gradle caches. `APP_VARIANT` still selects the JS-side
 config (`expo-constants`) at build time; the scripts set it to match the flavor.
 `scripts/run-android.sh` reads `ANDROID_APPLICATION_ID` from `app.config.ts` for `--app-id`,
 so package names live only there. iOS still switches identifiers through `APP_VARIANT` + prebuild.
@@ -75,7 +85,7 @@ so package names live only there. iOS still switches identifiers through `APP_VA
 Generate or update native projects for a mode:
 
 ```bash
-bun run prebuild:android          # Same output for both flavors
+bun run prebuild:android          # Same output for every flavor
 bun run prebuild:ios
 bun run prebuild:ios:prod
 ```
@@ -96,6 +106,7 @@ Both use `scripts/build-android.sh`. Default mode is production. Override it wit
 ./scripts/build-android.sh --production --apk
 ./scripts/build-android.sh --production --aab
 ./scripts/build-android.sh --development --apk
+./scripts/build-android.sh --preview --apk
 ```
 
 The script reads app version and version code from `package.json`, resolves app name from
@@ -108,12 +119,13 @@ keystore configuration. Review that script before using it for shared or public 
 ```bash
 bun start                         # Start Metro only
 bun run android                   # Build, install, and run dev flavor (debug)
+bun run android:preview           # Build, install, and run preview flavor (release)
 bun run android:prod              # Build, install, and run prod flavor (release)
 bun run ios                       # Build, install, and run development iOS app
 bun run check                     # Ultracite check
 bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
-bun run prebuild:android          # Android prebuild (both flavors), preserves native changes
+bun run prebuild:android          # Android prebuild (all flavors), preserves native changes
 bun run prebuild:android:clean    # Clean Android prebuild
 bun run prebuild:ios              # Development iOS prebuild, preserves native changes
 bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes

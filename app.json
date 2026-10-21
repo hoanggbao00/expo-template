@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Expo Template",
+    "slug": "expo-template",
+    "scheme": "expo-template",
+    "orientation": "portrait",
+    "icon": "./assets/icon-app/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/icon-app/expo.icon",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hoanggbao.expo.template",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.hoanggbao.expo.template",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/icon-app/android-icon-foreground.png",
+        "backgroundImage": "./assets/icon-app/android-icon-background.png",
+        "monochromeImage": "./assets/icon-app/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 28,
+            "buildArchs": ["arm64-v8a"],
+            "gifEnabled": false,
+            "webpEnabled": false
+          }
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-router",
+      "@rbayuokt/expo-adaptive-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#208AEF",
+          "android": {
+            "image": "./assets/icon-app/splash-icon.png",
+            "imageWidth": 76
+          }
+        }
+      ],
+      [
+        "react-native-nano-icons",
+        {
+          "iconSets": [
+            {
+              "inputDir": "./assets/icons/common",
+              "outputDir": "./assets/icons/output"
+            }
+          ]
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
