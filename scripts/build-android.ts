@@ -2,10 +2,10 @@
 /**
  * Android release build: prebuild, sign, and copy artifacts to output/android/<version>/.
  *
- *   bun run android:build                          # interactive
- *   bun run android:build -v prod -b aab           # production AAB
- *   bun run android:build -v all -b all            # every variant, APK + AAB
- *   bun run android:build -v preview -b apk -n qa  # output/android/<version>/qa.apk
+ *   bun run build:android                          # interactive
+ *   bun run build:android -v prod -b aab           # production AAB
+ *   bun run build:android -v all -b all            # every variant, APK + AAB
+ *   bun run build:android -v preview -b apk -n qa  # output/android/<version>/qa.apk
  *
  * Anything not passed as a flag is asked. Without a terminal (CI) the defaults are production APK.
  * Signing reads ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS (e.g. from .env.production.local).
@@ -64,7 +64,7 @@ const OPTIONS = {
   type: { type: "string", short: "b" },
   name: { type: "string", short: "n" },
 } as const;
-const USAGE = "Usage: bun run android:build [-v prod|preview|dev|all] [-b apk|aab|all] [-n file-name]";
+const USAGE = "Usage: bun run build:android [-v prod|preview|dev|all] [-b apk|aab|all] [-n file-name]";
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const ARTIFACT_EXTENSION = /\.(apk|aab)$/i;
@@ -335,8 +335,9 @@ async function main() {
     return;
   }
 
-  // Prebuild output is identical for every flavor, so it runs once.
-  await prebuild(jobs[0].variant);
+  // Prebuild output is identical for every flavor, so it runs once; `bun run build:android`
+  // already ran it through the `prebuild:android` pre hook.
+  if (process.env.npm_lifecycle_event !== "build:android") await prebuild(jobs[0].variant);
   applyGradleHeap();
   await ensureKeystore();
 

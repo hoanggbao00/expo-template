@@ -107,10 +107,10 @@ commands use `--no-clean` to preserve existing native changes.
 is identical for every flavor. Without a terminal (CI) the defaults are production APK.
 
 ```bash
-bun run android:build                              # interactive
-bun run android:build -v prod -b aab               # -v/--variant prod|preview|dev|all
-bun run android:build -v all -b all                # -b/--type apk|aab|all
-bun run android:build -v preview -b apk -n qa      # -n/--name, saved as qa.apk
+bun run build:android                              # interactive
+bun run build:android -v prod -b aab               # -v/--variant prod|preview|dev|all
+bun run build:android -v all -b all                # -b/--type apk|aab|all
+bun run build:android -v preview -b apk -n qa      # -n/--name, saved as qa.apk
 bun run build:apk                                  # -b apk, asks the rest
 ```
 
@@ -139,7 +139,7 @@ bun run prebuild:android:clean    # Clean Android prebuild
 bun run prebuild:ios              # Development iOS prebuild, preserves native changes
 bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes
 bun run prebuild:ios:clean        # Clean development iOS prebuild
-bun run android:build             # Pick variant + format interactively
+bun run build:android             # Pick variant + format interactively
 bun run build:apk                 # APK (asks the rest)
 bun run build:aab                 # AAB (asks the rest)
 ```

@@ -23,7 +23,7 @@ bun run test:ui
 bun run prebuild:android
 bun run prebuild:ios
 bun run prebuild:ios:prod
-bun run android:build   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name
+bun run build:android   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name
 bun run build:apk
 bun run build:aab
 ```
