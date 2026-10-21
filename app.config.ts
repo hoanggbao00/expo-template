@@ -73,7 +73,6 @@ const expoConfig: ExpoConfig = {
         android: {
           minSdkVersion: 28, // Android 9
           buildArchs: ["arm64-v8a"],
-          // Only affects RN <Image>; expo-image ships its own GIF/WebP decoders.
           gifEnabled: false,
           webpEnabled: false,
         },
