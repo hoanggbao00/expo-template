@@ -28,6 +28,7 @@
     "fix": "ultracite fix",
     "typecheck": "bun --bun tsc --noEmit && bun --bun tsc --noEmit -p tsconfig.test.json",
     "test": "bun test",
+    "test:ui": "jest",
     "prepare": "lefthook install",
     "build:apk": "./scripts/build-android.sh --apk",
     "build:aab": "./scripts/build-android.sh --aab",
@@ -75,9 +76,13 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
     "@dev-plugins/react-query": "^0.4.0",
+    "@testing-library/react-native": "^14.1.0",
     "@types/bun": "^1.4.3",
+    "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
     "expo-atlas": "^0.4.3",
+    "jest": "~30.5.2",
+    "jest-expo": "~58.0.11",
     "lefthook": "^2.2.2",
     "typescript": "~7.0.2",
     "ultracite": "7.7.0"
@@ -100,5 +105,25 @@
     "metro@0.87.1": "patches/metro@0.87.1.patch",
     "metro-runtime@0.87.1": "patches/metro-runtime@0.87.1.patch",
     "react-native-worklets@0.13.0": "patches/react-native-worklets@0.13.0.patch"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "testMatch": [
+      "<rootDir>/test/**/*.test.tsx"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/jest-setup.ts"
+    ],
+    "watchman": false,
+    "moduleNameMapper": {
+      "^@/assets/(.*)$": "<rootDir>/assets/$1",
+      "\\.css$": "<rootDir>/test/style-mock.js"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|standard-navigation|@dev-plugins|uniwind|panelui-native|@rbayuokt))",
+      "/node_modules/react-native-reanimated/plugin/",
+      "/node_modules/@react-native/babel-preset/"
+    ],
+    "resolver": "react-native-reanimated/jest/resolver"
   }
 }

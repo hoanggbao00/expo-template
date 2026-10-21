@@ -10,5 +10,5 @@
     "expo-env.d.ts",
     "uniwind-types.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "test/jest-setup.ts"]
 }

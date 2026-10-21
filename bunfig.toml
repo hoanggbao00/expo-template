@@ -1,2 +1,4 @@
 [test]
 preload = ["./test/setup.ts"]
+# *.test.tsx render React Native and run under Jest (`bun run test:ui`).
+pathIgnorePatterns = ["**/*.test.tsx"]

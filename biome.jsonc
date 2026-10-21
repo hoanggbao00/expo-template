@@ -36,7 +36,7 @@
     }
   },
   "javascript": {
-    "globals": ["__DEV__"]
+    "globals": ["__DEV__", "jest"]
   },
   "assist": {
     "enabled": false

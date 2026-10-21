@@ -126,6 +126,8 @@ bun run ios                       # Build, install, and run development iOS app
 bun run check                     # Ultracite check
 bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
+bun run test                      # Logic tests (bun test)
+bun run test:ui                   # Render tests (Jest + jest-expo)
 bun run prebuild:android          # Android prebuild (all flavors), preserves native changes
 bun run prebuild:android:clean    # Clean Android prebuild
 bun run prebuild:ios              # Development iOS prebuild, preserves native changes
