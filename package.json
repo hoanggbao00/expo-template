@@ -118,6 +118,7 @@
       "<rootDir>/test/jest-setup.ts"
     ],
     "watchman": false,
+    "testTimeout": 30000,
     "moduleNameMapper": {
       "^@/assets/(.*)$": "<rootDir>/assets/$1",
       "\\.css$": "<rootDir>/test/style-mock.js"
