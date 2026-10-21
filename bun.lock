@@ -45,6 +45,7 @@
       },
       "devDependencies": {
         "@biomejs/biome": "2.4.15",
+        "@clack/prompts": "^1.8.1",
         "@dev-plugins/react-query": "^0.4.0",
         "@testing-library/react-native": "^14.1.0",
         "@types/bun": "^1.4.3",

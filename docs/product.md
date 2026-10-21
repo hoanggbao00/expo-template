@@ -19,10 +19,10 @@ Android maps modes to Gradle product flavors (`dev`, `preview`, `prod`) in one n
 `plugins/with-android-flavors.js`. iOS still switches identifiers through prebuild.
 
 ```bash
-bun run android                   # dev flavor
+bun run android                   # asks: dev / preview / prod
 bun run android:preview           # preview flavor
 bun run android:prod              # prod flavor
-APP_VARIANT=production bun run prebuild:ios:prod
+bun run ios                       # asks variant; re-prebuilds when the bundle id differs
 ```
 
 ## Product boundaries

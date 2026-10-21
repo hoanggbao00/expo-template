@@ -16,6 +16,7 @@
     "metro.config.js",
     "android",
     "ios",
+    "scripts",
     "test",
     "**/*.test.ts"
   ]

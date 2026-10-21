@@ -34,10 +34,11 @@ use `bun start` when only Metro needs restarting.
 Run a specific mode explicitly:
 
 ```bash
-bun run android                   # dev flavor, debug build
+bun run android                   # asks variant (dev = debug, others = release)
 bun run android:preview           # preview flavor, release build
 bun run android:prod              # prod flavor, release build
-APP_VARIANT=development bun run ios
+bun run ios                       # asks variant; re-prebuilds iOS only when the bundle id differs
+bun run ios -v prod               # skip the question (-v dev|preview|prod)
 ```
 
 ## App modes
@@ -75,8 +76,9 @@ Android uses one native project for every mode. `plugins/with-android-flavors.js
 Android prebuild output is identical for every `APP_VARIANT`, so switching modes never
 re-prebuilds and all flavors share Gradle caches. `APP_VARIANT` still selects the JS-side
 config (`expo-constants`) at build time; the scripts set it to match the flavor.
-`scripts/run-android.sh` reads `ANDROID_APPLICATION_ID` from `app.config.ts` for `--app-id`,
-so package names live only there. iOS still switches identifiers through `APP_VARIANT` + prebuild.
+`scripts/run-android.ts` imports `VARIANTS` from `app.config.ts` for the flavor and `--app-id`,
+so package names live only there. iOS has no flavors: `scripts/run-ios.ts` re-runs prebuild when the Xcode project carries
+another variant's bundle id, then runs Debug (dev) or Release (preview/prod).
 
 ## Build
 
@@ -95,34 +97,38 @@ commands use `--no-clean` to preserve existing native changes.
 
 ### Android release artifacts
 
+`scripts/build-android.ts` (Bun + `@clack/prompts`) asks for anything not passed as a flag:
+
+1. Variant: `production`, `preview`, `development`, or `all`
+2. Format: `apk`, `aab`, or `all`
+3. File name: empty uses `<AppName>-<timestamp>`
+
+`all` builds every combination after one confirmation; prebuild runs once since its output
+is identical for every flavor. Without a terminal (CI) the defaults are production APK.
+
 ```bash
-bun run build:apk
-bun run build:aab
+bun run android:build                              # interactive
+bun run android:build -v prod -b aab               # -v/--variant prod|preview|dev|all
+bun run android:build -v all -b all                # -b/--type apk|aab|all
+bun run android:build -v preview -b apk -n qa      # -n/--name, saved as qa.apk
+bun run build:apk                                  # -b apk, asks the rest
 ```
 
-Both use `scripts/build-android.sh`. Default mode is production. Override it with flags:
-
-```bash
-./scripts/build-android.sh --production --apk
-./scripts/build-android.sh --production --aab
-./scripts/build-android.sh --development --apk
-./scripts/build-android.sh --preview --apk
-```
-
-The script reads app version and version code from `package.json`, resolves app name from
-`app.config.ts`, selects `APP_VARIANT` and the matching flavor task (`assembleProdRelease`,
-`bundleDevRelease`, ...), configures Gradle, and signs using the local release
-keystore configuration. Artifacts land in `output/android/<androidVersion>/<AppName>-<timestamp>.{apk,aab}`
-(ignored by Git). Review that script before using it for shared or public releases.
+Variant, flavor task (`assembleProdRelease`, `bundleDevRelease`, ...) and app name come from
+`VARIANTS` in `app.config.ts`; version and version code from `package.json`. Signing uses
+`release.keystore` with `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` (set them in
+`.env.production.local`; the script falls back to local defaults). Artifacts land in
+`output/android/<androidVersion>/` (ignored by Git). On failure the full Gradle log is
+written to `android/android_build.log`.
 
 ## Scripts
 
 ```bash
 bun start                         # Start Metro only
-bun run android                   # Build, install, and run dev flavor (debug)
+bun run android                   # Pick a variant, then build, install, and run
 bun run android:preview           # Build, install, and run preview flavor (release)
 bun run android:prod              # Build, install, and run prod flavor (release)
-bun run ios                       # Build, install, and run development iOS app
+bun run ios                       # Pick a variant, then build, install, and run on iOS
 bun run check                     # Ultracite check
 bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
@@ -133,8 +139,9 @@ bun run prebuild:android:clean    # Clean Android prebuild
 bun run prebuild:ios              # Development iOS prebuild, preserves native changes
 bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes
 bun run prebuild:ios:clean        # Clean development iOS prebuild
-bun run build:apk                 # Production APK
-bun run build:aab                 # Production AAB
+bun run android:build             # Pick variant + format interactively
+bun run build:apk                 # APK (asks the rest)
+bun run build:aab                 # AAB (asks the rest)
 ```
 
 ## Project structure

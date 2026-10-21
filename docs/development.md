@@ -23,9 +23,13 @@ bun run test:ui
 bun run prebuild:android
 bun run prebuild:ios
 bun run prebuild:ios:prod
+bun run android:build   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name
 bun run build:apk
 bun run build:aab
 ```
+
+Android scripts live in `scripts/*.ts` and run with Bun; they are type-checked by
+`tsconfig.test.json` (Bun types) and import `VARIANTS` from `app.config.ts`.
 
 ## Validation
 
