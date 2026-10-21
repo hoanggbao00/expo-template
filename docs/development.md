@@ -49,8 +49,6 @@ worklets, lower memory).
 
 - `babel.config.js`: `react-native-worklets/plugin` with `bundleMode: true`
 - `metro.config.js`: `withUniwindConfig()` first, `getBundleModeMetroConfig()` last
-- `package.json` `overrides` pins a single `metro@0.87.1` so the Metro patch reaches every copy
-  (Uniwind's `metro: *` peer otherwise keeps a stale hoisted version)
 
 ## Patches
 

@@ -23,11 +23,11 @@
         "expo-status-bar": "~58.0.3",
         "expo-system-ui": "~58.0.6",
         "i18next": "^26.5.3",
-        "panelui-native": "0.112.0",
+        "panelui-native": "0.113.0",
         "react": "19.3.0",
         "react-i18next": "^17.1.0",
         "react-native": "0.88.0",
-        "react-native-ease": "^0.8.1",
+        "react-native-ease": "^0.9.0",
         "react-native-gesture-handler": "~3.3.0",
         "react-native-keyboard-controller": "^1.22.8",
         "react-native-mmkv": "^4.3.2",
@@ -59,9 +59,6 @@
     "metro-runtime@0.87.1": "patches/metro-runtime@0.87.1.patch",
     "metro@0.87.1": "patches/metro@0.87.1.patch",
     "react-native-worklets@0.13.0": "patches/react-native-worklets@0.13.0.patch",
-  },
-  "overrides": {
-    "metro": "0.87.1",
   },
   "packages": {
     "2g": ["2g@1.0.1", "", { "peerDependencies": { "typescript": ">=5.8.0" }, "optionalPeers": ["typescript"], "bin": { "2g": "bin/cli.js" } }, "sha512-+uViadKOS/wwR4pFu5g8TPn3QHpKqoX19JHCnp8k/3cLpImdcXozwvZA6Q/5PeW3AcU8neL8faaMidBcv7o8CA=="],
@@ -1060,7 +1057,7 @@
 
     "ora": ["ora@9.4.1", "", { "dependencies": { "chalk": "^5.6.2", "cli-cursor": "^5.0.0", "cli-spinners": "^3.2.0", "is-interactive": "^2.0.0", "is-unicode-supported": "^2.1.0", "log-symbols": "^7.0.1", "stdin-discarder": "^0.3.2", "string-width": "^8.1.0" } }, "sha512-6VlU9MLXbjVQD04AZCMX28hVtA5bUoadvUqO76MUCVA0ilwJbMiHsITRPfyVm6p/BC0Av/BXMujx39WCe1LEqw=="],
 
-    "panelui-native": ["panelui-native@0.112.0", "", { "dependencies": { "@hugeicons/core-free-icons": "^4.3.0", "@hugeicons/react-native": "^1.0.16", "clsx": "^2.1.1", "tailwind-merge": "^3.3.1", "tailwind-variants": "^3.2.2" }, "peerDependencies": { "@expo/ui": "*", "@maplibre/maplibre-react-native": ">=11.0.0", "@react-native-masked-view/masked-view": ">=0.3.0", "expo-blur": ">=13.0.0", "expo-clipboard": ">=7.0.0", "expo-document-picker": ">=13.0.0", "expo-file-system": ">=17.0.0", "expo-glass-effect": ">=57.0.0", "expo-haptics": ">=13.0.0", "expo-image-manipulator": ">=13.0.0", "expo-image-picker": ">=16.0.0", "expo-linear-gradient": ">=13.0.0", "expo-location": ">=18.0.0", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.0.0", "react-native-keyboard-controller": ">=1.12.0", "react-native-reanimated": ">=3.0.0", "react-native-safe-area-context": ">=4.0.0", "react-native-svg": ">=15.0.0", "react-native-view-shot": ">=3.8.0", "react-native-worklets": ">=0.10.0", "tailwindcss": ">=4.0.0", "uniwind": ">=1.0.0" }, "optionalPeers": ["@expo/ui", "@maplibre/maplibre-react-native", "expo-blur", "expo-clipboard", "expo-document-picker", "expo-file-system", "expo-glass-effect", "expo-haptics", "expo-image-manipulator", "expo-image-picker", "expo-location", "react-native-keyboard-controller", "react-native-view-shot", "react-native-worklets"] }, "sha512-BTVnctJxfP4CHFVU7NUwLDx2PfVYBU8JKGPy31jP+LZIGcVsaVh0/whXrrNGdprAYaO9UC+axEs4d2lJZ62EuA=="],
+    "panelui-native": ["panelui-native@0.113.0", "", { "dependencies": { "@hugeicons/core-free-icons": "^4.3.0", "@hugeicons/react-native": "^1.0.16", "clsx": "^2.1.1", "tailwind-merge": "^3.3.1", "tailwind-variants": "^3.2.2" }, "peerDependencies": { "@expo/ui": "*", "@maplibre/maplibre-react-native": ">=11.0.0", "@react-native-masked-view/masked-view": ">=0.3.0", "expo-blur": ">=13.0.0", "expo-clipboard": ">=7.0.0", "expo-document-picker": ">=13.0.0", "expo-file-system": ">=17.0.0", "expo-glass-effect": ">=57.0.0", "expo-haptics": ">=13.0.0", "expo-image-manipulator": ">=13.0.0", "expo-image-picker": ">=16.0.0", "expo-linear-gradient": ">=13.0.0", "expo-location": ">=18.0.0", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.0.0", "react-native-keyboard-controller": ">=1.12.0", "react-native-reanimated": ">=3.0.0", "react-native-safe-area-context": ">=4.0.0", "react-native-svg": ">=15.0.0", "react-native-view-shot": ">=3.8.0", "react-native-worklets": ">=0.10.0", "tailwindcss": ">=4.0.0", "uniwind": ">=1.0.0" }, "optionalPeers": ["@expo/ui", "@maplibre/maplibre-react-native", "expo-blur", "expo-clipboard", "expo-document-picker", "expo-file-system", "expo-glass-effect", "expo-haptics", "expo-image-manipulator", "expo-image-picker", "expo-location", "react-native-keyboard-controller", "react-native-view-shot", "react-native-worklets"] }, "sha512-xoLtZTp2qQOhpmq03+aC7tdw81+xrhzED4MJHMjXab5f02edz/Fj8m8sZe55upWR/oZ6vaq7vTOYDGD0vVEJfA=="],
 
     "parse-png": ["parse-png@2.1.0", "", { "dependencies": { "pngjs": "^3.3.0" } }, "sha512-Nt/a5SfCLiTnQAjx3fHlqp8hRgTL3z7kTQZzvIMS9uCAepnCyjpdEc6M/sz69WqMBdaDBw9sF1F1UaHROYzGkQ=="],
 
@@ -1124,7 +1121,7 @@
 
     "react-native-drawer-layout": ["react-native-drawer-layout@4.2.12", "", { "dependencies": { "color": "^4.2.3", "use-latest-callback": "^0.2.4" }, "peerDependencies": { "react": ">= 18.2.0", "react-native": "*", "react-native-gesture-handler": ">= 2.0.0", "react-native-reanimated": ">= 2.0.0" } }, "sha512-qYmntEctkMSodN7pnC2llV21nswImLFPHJeT3PJXSJqZdU4jzDATR8iVi66sXkrtoOLJ2+EvXxgd7sMMpV4ViA=="],
 
-    "react-native-ease": ["react-native-ease@0.8.1", "", { "peerDependencies": { "nativewind": ">=4", "react": "*", "react-native": "*", "uniwind": ">=1" }, "optionalPeers": ["nativewind", "uniwind"] }, "sha512-zEJh7b+ZknETtvAZPbfZdlMLFmaySs56Wlr6rVRZlov9G9dRbVIBqsPCaKr0uvsg/KzEmg9ON5GBlBEz7qUEKg=="],
+    "react-native-ease": ["react-native-ease@0.9.0", "", { "peerDependencies": { "nativewind": ">=4", "react": "*", "react-native": "*", "uniwind": ">=1" }, "optionalPeers": ["nativewind", "uniwind"] }, "sha512-8E5glf2hyhNmXzgpcV+i0XkuGtgAxjMmxkuBeTlp08Qri5Kqv+xCRzCFwVDGZdeU09ZbYHpwdS3Xny24rLUzxA=="],
 
     "react-native-gesture-handler": ["react-native-gesture-handler@3.3.0", "", { "dependencies": { "@types/react-test-renderer": "^19.1.0", "invariant": "^2.2.4" }, "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-ZCTlJ09nE3GPbm7J74lvwpxmx1TQ/7MDlHZNLARVYTN82k21mJUJ7BmI9eWjEi8eevHiAudI5O1Cpnt0rJfoJA=="],
 
