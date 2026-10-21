@@ -31,6 +31,7 @@
     "test:ui": "jest",
     "prepare": "lefthook install",
     "build:android": "NODE_ENV=production bun scripts/build-android.ts",
+    "build:android:clean": "NODE_ENV=production bun scripts/build-android.ts",
     "build:apk": "NODE_ENV=production bun scripts/build-android.ts -b apk",
     "build:aab": "NODE_ENV=production bun scripts/build-android.ts -b aab",
     "atlas": "EXPO_ATLAS=true bun expo export --platform android && bunx expo-atlas .expo/atlas.jsonl"

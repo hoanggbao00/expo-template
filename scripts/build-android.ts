@@ -6,6 +6,7 @@
  *   bun run build:android -v prod -b aab           # production AAB
  *   bun run build:android -v all -b all            # every variant, APK + AAB
  *   bun run build:android -v preview -b apk -n qa  # output/android/<version>/qa.apk
+ *   bun run build:android --clean                  # clean prebuild first (same as build:android:clean)
  *
  * Anything not passed as a flag is asked. Without a terminal (CI) the defaults are production APK.
  * Signing reads ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS (e.g. from .env.production.local).
@@ -63,8 +64,9 @@ const OPTIONS = {
   variant: { type: "string", short: "v" },
   type: { type: "string", short: "b" },
   name: { type: "string", short: "n" },
+  clean: { type: "boolean", short: "c" },
 } as const;
-const USAGE = "Usage: bun run build:android [-v prod|preview|dev|all] [-b apk|aab|all] [-n file-name]";
+const USAGE = "Usage: bun run build:android [-v prod|preview|dev|all] [-b apk|aab|all] [-n file-name] [-c|--clean]";
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const ARTIFACT_EXTENSION = /\.(apk|aab)$/i;
@@ -194,9 +196,9 @@ function planJobs(variants: AppVariant[], formats: BuildFormat[], customName: st
   );
 }
 
-async function prebuild(variant: AppVariant) {
-  const task = taskLog({ title: "Expo prebuild (Android)", limit: 8 });
-  const { code } = await run(["bun", "expo", "prebuild", "--platform", "android", "--no-clean"], {
+async function prebuild(variant: AppVariant, clean: boolean) {
+  const task = taskLog({ title: clean ? "Expo prebuild --clean (Android)" : "Expo prebuild (Android)", limit: 8 });
+  const { code } = await run(["bun", "expo", "prebuild", "--platform", "android", ...(clean ? [] : ["--no-clean"])], {
     env: { APP_VARIANT: variant },
     onLine: (line) => line.trim() && task.message(line),
   });
@@ -295,7 +297,7 @@ async function buildJob(job: BuildJob) {
   mkdirSync(OUTPUT_DIR, { recursive: true });
   const dest = path.join(OUTPUT_DIR, job.fileName);
   renameSync(artifact, dest);
-  task.success(`${job.variant} ${job.format} -> ${path.relative(ROOT_DIR, dest)}`);
+  task.success(`${job.variant.padEnd(12)} ${job.format}  ${styleText("dim", job.fileName)}`);
   return dest;
 }
 
@@ -335,18 +337,29 @@ async function main() {
     return;
   }
 
-  // Prebuild output is identical for every flavor, so it runs once; `bun run build:android`
-  // already ran it through the `prebuild:android` pre hook.
-  if (process.env.npm_lifecycle_event !== "build:android") await prebuild(jobs[0].variant);
+  // Prebuild output is identical for every flavor, so it runs once. `build:android` and
+  // `build:android:clean` already ran it through their `prebuild:*` pre hooks.
+  const event = process.env.npm_lifecycle_event;
+  const clean = Boolean(args.clean);
+  const hookCleaned = event === "build:android:clean";
+  const hookPrebuilt = hookCleaned || event === "build:android";
+  if (clean ? !hookCleaned : !hookPrebuilt) await prebuild(jobs[0].variant, clean);
   applyGradleHeap();
   await ensureKeystore();
 
   const outputs: string[] = [];
   for (const job of jobs) outputs.push(await buildJob(job));
 
-  outro(
-    `${styleText("green", "Build successful")}\n${outputs.map((file) => `   ${path.relative(ROOT_DIR, file)}`).join("\n")}`
-  );
+  outro(`${styleText("green", "Build successful")}  ${styleText("dim", path.relative(ROOT_DIR, OUTPUT_DIR))}`);
+
+  // Printed outside the clack frame so long paths wrap cleanly and copy without the gutter.
+  // AABs can't be installed with adb directly, so only APKs get a hint.
+  const apks = outputs.filter((file) => file.endsWith(".apk"));
+  if (apks.length > 0) {
+    process.stdout.write(
+      `${styleText("dim", ["Install:", ...apks.map((file) => `adb install "${file}"`)].join("\n"))}\n`
+    );
+  }
 }
 
 await main();

@@ -24,6 +24,7 @@ bun run prebuild:android
 bun run prebuild:ios
 bun run prebuild:ios:prod
 bun run build:android   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name
+bun run build:android:clean   # same, after a clean prebuild
 bun run build:apk
 bun run build:aab
 ```
