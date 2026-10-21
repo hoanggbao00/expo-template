@@ -112,7 +112,8 @@ Both use `scripts/build-android.sh`. Default mode is production. Override it wit
 The script reads app version and version code from `package.json`, resolves app name from
 `app.config.ts`, selects `APP_VARIANT` and the matching flavor task (`assembleProdRelease`,
 `bundleDevRelease`, ...), configures Gradle, and signs using the local release
-keystore configuration. Review that script before using it for shared or public releases.
+keystore configuration. Artifacts land in `output/android/<androidVersion>/<AppName>-<timestamp>.{apk,aab}`
+(ignored by Git). Review that script before using it for shared or public releases.
 
 ## Scripts
 

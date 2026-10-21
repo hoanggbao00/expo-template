@@ -177,7 +177,8 @@ fi
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 FINAL_FILENAME="${APP_NAME}-${TIMESTAMP}.${OUTPUT_EXT}"
-DEST_FILE="$ROOT_DIR/$FINAL_FILENAME"
+DEST_DIR="$ROOT_DIR/output/android/$APP_VERSION"
+DEST_FILE="$DEST_DIR/$FINAL_FILENAME"
 
 # =========================================================
 # 4. SUMMARY
@@ -190,7 +191,7 @@ echo -e "📂 Target Dir : ${CYAN}$ANDROID_DIR${NC}"
 echo -e "📱 App Name   : ${CYAN}$APP_DISPLAY_NAME${NC}"
 echo -e "🏷️  Variant    : ${CYAN}$APP_VARIANT ($GRADLE_TASK)${NC}"
 echo -e "📦 Build Type : ${CYAN}$BUILD_FORMAT${NC}"
-echo -e "📄 Output     : $FINAL_FILENAME"
+echo -e "📄 Output     : output/android/$APP_VERSION/$FINAL_FILENAME"
 echo -e "🔢 App Version: ${CYAN}$APP_VERSION ($APP_VERSION_CODE)${NC}"
 echo -e "${GREEN}==========================================${NC}"
 echo ""
@@ -293,6 +294,7 @@ fi
 echo -n -e "${CYAN}4️⃣  Step 4/5: Moving Artifact... ${NC}"
 SOURCE_FILE="$INTERNAL_OUTPUT_PATH/app-${FLAVOR}-release.$OUTPUT_EXT"
 if [ -f "$SOURCE_FILE" ]; then
+    mkdir -p "$DEST_DIR"
     mv "$SOURCE_FILE" "$DEST_FILE"
     echo -e "${GREEN}DONE${NC}"
 
