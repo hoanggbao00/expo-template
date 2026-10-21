@@ -1,5 +1,5 @@
-import { useThemeColor } from "@/hooks/use-theme-color";
-import type { SemanticColor, TextColor, ThemeColor } from "@/styles/colors.type";
+import { cn } from "@/lib/utils";
+import type { SemanticColor, TextColor } from "@/styles/colors.type";
 import { FONT_MAP, type FontWeight } from "@/styles/fonts";
 import { nf } from "@/utils/screen-utils";
 import type React from "react";
@@ -18,17 +18,35 @@ type Name = NameWithSWC | NameWithSW;
 const LINE_HEIGHT_RATIO = 4 / 3;
 
 const DEFAULT_NAME: Name = "14.regular.foreground";
-interface Props extends React.ComponentProps<typeof RNText> {
+
+// Static class strings so Tailwind can see them; a className color passed by the caller wins via cn().
+const COLOR_CLASS: Record<FontColor, string> = {
+  foreground: "text-foreground",
+  "card-foreground": "text-card-foreground",
+  "muted-foreground": "text-muted-foreground",
+  "secondary-foreground": "text-secondary-foreground",
+  "accent-foreground": "text-accent-foreground",
+  "primary-foreground": "text-primary-foreground",
+  primary: "text-primary",
+  info: "text-info",
+  success: "text-success",
+  warning: "text-warning",
+  destructive: "text-destructive",
+};
+
+const StyledText = withUniwind(RNText);
+
+interface Props extends React.ComponentProps<typeof StyledText> {
   /**
    * The shorthand for the Text component. (default: "14.regular.foreground")
    */
   name?: Name;
   /**
-   * The alignment for the Text component. (default: "center")
+   * The alignment for the Text component.
    */
   align?: "left" | "center" | "right";
   /**
-   * The center alignment for the Text component. (default: false)
+   * Shorthand for `align="center"`. `align` wins when both are set.
    */
   center?: boolean;
 
@@ -49,8 +67,8 @@ interface Props extends React.ComponentProps<typeof RNText> {
 /**
  * ThemedText component.
  * @param {Name} name - The shorthand for the Text component. (default: "14.regular.foreground")
- * @param {"left" | "center" | "right"} align - The alignment for the Text component. (default: "left")
- * @param {boolean} center - The center alignment for the Text component.
+ * @param {"left" | "center" | "right"} align - The alignment for the Text component.
+ * @param {boolean} center - Shorthand for `align="center"`.
  * @param {number} size - The size for the Text component. (default: 14) or number in px.
  * @param {FontWeight} weight - The weight for the Text component. (default: "regular")
  * @param {FontColor} color - The color for the Text component. (default: "foreground")
@@ -58,8 +76,9 @@ interface Props extends React.ComponentProps<typeof RNText> {
 export function Text({
   name = DEFAULT_NAME,
   style: _style,
+  className,
   align,
-  center = false,
+  center,
 
   // Custom more
   size,
@@ -71,17 +90,14 @@ export function Text({
   const fontSizeNumber = size ?? Number.parseInt(fs, 10);
   const fontFamily = FONT_MAP[weight || (fw as FontWeight)] || FONT_MAP.regular;
   const lineHeight = nf(fontSizeNumber) * LINE_HEIGHT_RATIO;
-  const color = useThemeColor(colorProp || (fc as ThemeColor) || "foreground");
+  const colorClass = COLOR_CLASS[colorProp || (fc as FontColor)] ?? COLOR_CLASS.foreground;
 
   const baseStyle: Props["style"] = {
     fontFamily,
     fontSize: nf(fontSizeNumber),
     lineHeight,
-    color,
     textAlign: align || (center ? "center" : undefined),
   };
 
-  const mergedStyle = [baseStyle, _style];
-
-  return withUniwind(RNText)({ style: mergedStyle, ...props });
+  return <StyledText className={cn(colorClass, className)} style={[baseStyle, _style]} {...props} />;
 }

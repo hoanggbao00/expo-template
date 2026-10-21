@@ -4,17 +4,17 @@ Uniwind is styling system. This project does not use NativeWind.
 
 ## Rules
 
-- Use `className` on wrapped primitives from `@/components/tw`.
-- Use `@/components/tw` exports instead of raw React Native components when a wrapper exists.
+- React Native core components (`View`, `ScrollView`, `TextInput`, ...) support `className` directly via Uniwind's Metro resolver; import them from `react-native`.
+- Use `@/components/tw` exports for third-party components and custom wrappers.
 - Put reusable visual values in tokens, not repeated literals.
 - Keep screen-private styles beside screen components.
 - Use platform files only for meaningful platform differences; keep props identical.
 
 ## Components
 
-`src/components/tw/` wraps native, third-party, and animated components with Uniwind:
+`src/components/tw/` wraps third-party and animated components with Uniwind:
 
-- `View`, `ScrollView`, `Image`, `Pressable`, `TextInput`
+- `Image` (expo-image), `Pressable` (RN or RNGH via `isRNGH`)
 - `Text` with font/color shorthand
 - `Icon` backed by generated Nano Icons
 - `SafeAreaView`, `KeyboardAvoidingView`, `AnimatedView`

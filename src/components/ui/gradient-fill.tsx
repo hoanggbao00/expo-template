@@ -1,4 +1,4 @@
-import { View } from "@/components/tw";
+import { View } from "react-native";
 import { cn } from "@/lib/utils";
 import { Gradient } from "@/styles/gradients";
 

@@ -1,7 +1,8 @@
 // biome-ignore-all lint/suspicious/noEmptySource: Allow empty source
 //* `bun add @react-native-masked-view/masked-view` if you need to use this component
 
-// import { Text, View } from "@/components/tw";
+// import { View } from "react-native";
+// import { Text } from "@/components/tw";
 // import { Gradient } from "@/styles/gradients";
 // import MaskedView from "@react-native-masked-view/masked-view";
 

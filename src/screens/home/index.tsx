@@ -1,4 +1,5 @@
-import { SafeAreaView, Text, View } from "@/components/tw";
+import { View } from "react-native";
+import { SafeAreaView, Text } from "@/components/tw";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
 
