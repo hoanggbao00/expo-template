@@ -29,6 +29,9 @@ Bun 1.4.2 is package manager. Styling uses Uniwind + Tailwind CSS v4, not Native
 - Keep native identifiers in `app.config.ts` (per-variant overrides on top of the `app.json` base).
 - `metro.config.js` order matters: `withUniwindConfig()` first, bundle-mode config last.
 - `react-native-worklets`, `metro`, and `uniwind` upgrades require native/runtime retesting.
+- Android builds: always use `bun run build:android` script, never `cd android && ./gradlew` or manual gradle tasks.
+  - Variant-specific env: add `.<variant>.env.local` (e.g., `.preview.env.local`) for variant-specific values.
+  - Caching: JS bundle always rebuilds (`--rerun`) to prevent cross-variant bundle reuse with stale env values.
 
 ## Aliases
 

@@ -11,6 +11,7 @@
 import { spawn } from "bun";
 import { getUniqueIdentifier, VARIANTS } from "../app.config";
 import appJson from "../app.json";
+import { reverseDevPorts } from "./adb-reverse";
 import { parseRunArgs, pickVariant } from "./variant";
 
 const { variant: flag, rest } = parseRunArgs(process.argv.slice(2));
@@ -18,6 +19,8 @@ const variant = flag ?? (await pickVariant());
 
 // Debug (with Metro) only for development; other variants mirror what ships.
 const buildType = variant === "development" ? "Debug" : "Release";
+// The app talks to localhost:8080 / :9000 (see .env.local); forward them to this Mac.
+await reverseDevPorts();
 const proc = spawn(
   [
     "bun",

@@ -3,19 +3,21 @@
  * Android release build: prebuild, sign, and copy artifacts to output/android/<version>/.
  *
  *   bun run build:android                          # interactive
- *   bun run build:android -v prod -b aab           # production AAB
- *   bun run build:android -v all -b all            # every variant, APK + AAB
- *   bun run build:android -v preview -b apk -n qa  # output/android/<version>/qa.apk
+ *   bun run build:android -v prod -f aab           # production AAB
+ *   bun run build:android -v all -f all            # every variant, APK + AAB
+ *   bun run build:android -v preview -f apk -y     # no "Start build?" after the summary
  *   bun run build:android --clean                  # clean prebuild first (same as build:android:clean)
  *
- * Anything not passed as a flag is asked. Without a terminal (CI) the defaults are production APK.
+ * Variant and format are asked when not passed; the file name is generated unless -n is given.
+ * Without a terminal (CI) the defaults are production APK.
  * Signing reads ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS (e.g. from .env.production.local).
+ * Each variant's bundle also gets `.<variant>.env.local` (e.g. the preview's Tailscale API URL), over `.env.local`.
  */
-import { cancel, confirm, intro, isCancel, log, note, outro, select, taskLog, text } from "@clack/prompts";
+import { cancel, confirm, intro, isCancel, log, note, outro, select, taskLog } from "@clack/prompts";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { cpus, platform, totalmem } from "node:os";
 import path from "node:path";
-import { parseArgs, styleText } from "node:util";
+import { parseArgs, parseEnv, styleText } from "node:util";
 import { spawn } from "bun";
 import { type AppVariant, getAppName, VARIANTS } from "../app.config";
 import appJson from "../app.json";
@@ -62,11 +64,16 @@ const INTERACTIVE = Boolean(process.stdin.isTTY);
 
 const OPTIONS = {
   variant: { type: "string", short: "v" },
+  format: { type: "string", short: "f" },
+  // Old name of --format.
   type: { type: "string", short: "b" },
   name: { type: "string", short: "n" },
   clean: { type: "boolean", short: "c" },
+  // Skips the "Start build?" question after the summary.
+  confirm: { type: "boolean", short: "y" },
 } as const;
-const USAGE = "Usage: bun run build:android [-v prod|preview|dev|all] [-b apk|aab|all] [-n file-name] [-c|--clean]";
+const USAGE =
+  "Usage: bun run build:android [-v prod|preview|dev|all] [-f apk|aab|all] [-n file-name] [-c|--clean] [-y|--confirm]";
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const ARTIFACT_EXTENSION = /\.(apk|aab)$/i;
@@ -116,6 +123,16 @@ function gradleJvmArgs() {
   if (memoryMb >= 16_384) return "-Xmx4096m -XX:MaxMetaspaceSize=1024m";
   if (memoryMb >= 8192) return "-Xmx3072m -XX:MaxMetaspaceSize=768m";
   return "-Xmx2048m -XX:MaxMetaspaceSize=512m";
+}
+
+function variantEnv(variant: AppVariant): Record<string, string> {
+  const file = path.join(ROOT_DIR, `.${variant}.env.local`);
+  if (!existsSync(file)) return {};
+  return Object.fromEntries(
+    Object.entries(parseEnv(readFileSync(file, "utf8"))).filter(
+      (entry): entry is [string, string] => entry[1] !== undefined
+    )
+  );
 }
 
 /** Lower CPU/IO priority so the machine stays usable during the build. */
@@ -178,12 +195,6 @@ async function resolveFormats(flag: string | undefined): Promise<BuildFormat[]> 
   if (choice === "all") return ALL_FORMATS;
   if (!ALL_FORMATS.includes(choice as BuildFormat)) fail(`Invalid type: ${choice}\n${USAGE}`);
   return [choice as BuildFormat];
-}
-
-async function resolveFileName(flag: string | undefined, variants: AppVariant[], stamp: string) {
-  if (flag !== undefined || !INTERACTIVE) return cleanFileName(flag ?? "");
-  const placeholder = variants.length === 1 ? generatedName(variants[0], stamp) : "<AppName>-<timestamp>";
-  return cleanFileName(unwrap(await text({ message: "File name", placeholder, defaultValue: "" })));
 }
 
 function planJobs(variants: AppVariant[], formats: BuildFormat[], customName: string, stamp: string): BuildJob[] {
@@ -267,6 +278,10 @@ async function buildJob(job: BuildJob) {
       ...lowPriorityPrefix(),
       "./gradlew",
       gradleTask,
+      // Always bundle the JS again: Gradle does not track variant-specific env (`.${variant}.env.local`), so an
+      // up-to-date or cached bundle from another build could slip into this variant's APK.
+      `:app:createBundle${flavorTask}ReleaseJsAndAssets`,
+      "--rerun",
       `--max-workers=${maxWorkers}`,
       "--build-cache",
       "--configure-on-demand",
@@ -278,8 +293,8 @@ async function buildJob(job: BuildJob) {
     ],
     {
       cwd: ANDROID_DIR,
-      // The release JS bundle reads app.config.ts, so it must see the matching variant.
-      env: { APP_VARIANT: job.variant, NODE_ENV: "production" },
+      // The release JS bundle reads app.config.ts and variant env, so it must see the matching variant.
+      env: { ...variantEnv(job.variant), APP_VARIANT: job.variant, NODE_ENV: "production" },
       onLine: (line) => GRADLE_PROGRESS.test(line) && task.message(line),
     }
   );
@@ -314,9 +329,9 @@ async function main() {
   intro(styleText(["bgGreen", "black"], " Android build "));
 
   const variants = await resolveVariants(args.variant);
-  const formats = await resolveFormats(args.type);
+  const formats = await resolveFormats(args.format ?? args.type);
   const stamp = timestamp();
-  const customName = await resolveFileName(args.name, variants, stamp);
+  const customName = cleanFileName(args.name ?? "");
   const jobs = planJobs(variants, formats, customName, stamp);
 
   note(
@@ -332,7 +347,7 @@ async function main() {
     "Build summary"
   );
 
-  if (INTERACTIVE && !unwrap(await confirm({ message: "Start build?" }))) {
+  if (INTERACTIVE && !args.confirm && !unwrap(await confirm({ message: "Start build?" }))) {
     cancel("Build cancelled.");
     return;
   }
