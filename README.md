@@ -87,13 +87,12 @@ another variant's bundle id, then runs Debug (dev) or Release (preview/prod).
 Generate or update native projects for a mode:
 
 ```bash
-bun run prebuild:android          # Same output for every flavor
-bun run prebuild:ios
-bun run prebuild:ios:prod
+bun run native:android            # Same output for every flavor
+bun run native:ios
 ```
 
-`prebuild:*:clean` variants allow Expo to regenerate the native project cleanly. The normal
-commands use `--no-clean` to preserve existing native changes.
+Both use `--no-clean` to preserve existing native changes. For a clean Android regeneration use
+`bun run build:android --clean`, which owns its own prebuild step.
 
 ### Android release artifacts
 
@@ -136,13 +135,10 @@ bun run fix                       # Ultracite format and autofix
 bun run typecheck                 # TypeScript check
 bun run test                      # Logic tests (bun test)
 bun run test:ui                   # Render tests (Jest + jest-expo)
-bun run prebuild:android          # Android prebuild (all flavors), preserves native changes
-bun run prebuild:android:clean    # Clean Android prebuild
-bun run prebuild:ios              # Development iOS prebuild, preserves native changes
-bun run prebuild:ios:prod         # Production iOS prebuild, preserves native changes
-bun run prebuild:ios:clean        # Clean development iOS prebuild
+bun run native:android            # Android prebuild (all flavors), preserves native changes
+bun run native:ios                # Development iOS prebuild, preserves native changes
 bun run build:android             # Pick variant + format interactively
-bun run build:android:clean       # Same, after a clean Android prebuild
+bun run build:android:clean       # Same, with a clean Android prebuild
 bun run build:apk                 # APK (asks the rest)
 bun run build:aab                 # AAB (asks the rest)
 ```
@@ -181,10 +177,12 @@ src/
 Screen flow:
 
 ```text
-src/app/profile.tsx
-  → src/screens/profile/index.tsx
-    → src/features/profile.query.ts
-      → src/features/profile.api.ts
+src/app/profile.tsx                                 route boundary
+└── src/screens/profile/index.tsx                   screen composition
+    ├── src/features/profile/profile-card.tsx       feature UI
+    └── src/features/profile/api/profile.queries.ts
+        ├── src/features/profile/api/profile.api.ts
+        └── src/features/profile/api/profile.query-key.ts
 ```
 
 Put screen-private UI in `src/screens/<name>/components/`. Promote UI to

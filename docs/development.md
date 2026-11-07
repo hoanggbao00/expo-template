@@ -20,11 +20,10 @@ bun run fix
 bun run typecheck
 bun run test
 bun run test:ui
-bun run prebuild:android
-bun run prebuild:ios
-bun run prebuild:ios:prod
-bun run build:android   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name
-bun run build:android:clean   # same, after a clean prebuild
+bun run native:android
+bun run native:ios
+bun run build:android   # interactive; flags: -v prod|preview|dev|all -b apk|aab|all -n name -c
+bun run build:android:clean   # same, with a clean prebuild
 bun run build:apk
 bun run build:aab
 ```

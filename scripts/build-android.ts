@@ -352,13 +352,8 @@ async function main() {
     return;
   }
 
-  // Prebuild output is identical for every flavor, so it runs once. `build:android` and
-  // `build:android:clean` already ran it through their `prebuild:*` pre hooks.
-  const event = process.env.npm_lifecycle_event;
-  const clean = Boolean(args.clean);
-  const hookCleaned = event === "build:android:clean";
-  const hookPrebuilt = hookCleaned || event === "build:android";
-  if (clean ? !hookCleaned : !hookPrebuilt) await prebuild(jobs[0].variant, clean);
+  // Prebuild output is identical for every flavor, so it runs once.
+  await prebuild(jobs[0].variant, Boolean(args.clean));
   applyGradleHeap();
   await ensureKeystore();
 

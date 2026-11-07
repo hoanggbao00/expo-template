@@ -4,7 +4,6 @@
     "slug": "expo-template",
     "scheme": "expo-template",
     "orientation": "portrait",
-    "icon": "./assets/icon-app/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/icon-app/expo.icon",

@@ -9,7 +9,7 @@ polyfills/                 # Runtime polyfills
 src/
 ├── app/                   # Expo Router routes only; keep thin
 ├── screens/               # Screen UI and screen-private components
-├── features/              # Flat <feature-name>.{api,query,mutation,query-key}.ts
+├── features/              # <feature-name>/ with api/ and feature-local code
 ├── components/            # Shared UI and wrapped primitives
 ├── providers/             # App-wide providers
 ├── state/                 # Client state and persisted Zustand stores
@@ -26,21 +26,36 @@ src/
 - `src/app/<route>.tsx`: route boundary only. Import a screen body.
 - `src/screens/<name>/index.tsx`: screen composition and UI state.
 - `src/screens/<name>/components/*`: components private to that screen.
-- `src/features/<feature-name>.api.ts`: HTTP and data-source functions.
-- `src/features/<feature-name>.query.ts`: TanStack Query definitions.
-- `src/features/<feature-name>.mutation.ts`: TanStack mutation definitions.
-- `src/features/<feature-name>.query-key.ts`: stable query keys.
+- `src/features/<feature-name>/api/<feature-name>.api.ts`: HTTP and data-source functions.
+- `src/features/<feature-name>/api/<feature-name>.queries.ts`: TanStack Query definitions.
+- `src/features/<feature-name>/api/<feature-name>.mutation.ts`: TanStack mutation definitions.
+- `src/features/<feature-name>/api/<feature-name>.query-key.ts`: stable query keys.
+- `src/features/<feature-name>/*`: components, constants and helpers private to that feature.
 - `src/components/*`: reusable UI shared by multiple screens.
 
-Features are flat files with kebab-case feature names. Add a role file only when needed.
+One kebab-case folder per feature. Data access lives under `api/`; everything else
+sits at the feature root. Add a role file only when needed.
+
+```text
+src/features/profile/
+├── profile-card.tsx
+├── constants.ts
+└── api/
+    ├── profile.api.ts
+    ├── profile.queries.ts
+    ├── profile.mutation.ts
+    └── profile.query-key.ts
+```
 
 Screen flow:
 
 ```text
-src/app/profile.tsx
-  → src/screens/profile/index.tsx
-    → src/features/profile.query.ts
-      → src/features/profile.api.ts
+src/app/profile.tsx                                 route boundary
+└── src/screens/profile/index.tsx                   screen composition
+    ├── src/features/profile/profile-card.tsx       feature UI
+    └── src/features/profile/api/profile.queries.ts
+        ├── src/features/profile/api/profile.api.ts
+        └── src/features/profile/api/profile.query-key.ts
 ```
 
 Do not put reusable code in `src/app/`. Add i18n keys to both locale files.

@@ -14,8 +14,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "APP_VARIANT=development expo start",
-    "prebuild:android": "expo prebuild --platform android --no-clean",
-    "prebuild:ios": "APP_VARIANT=development expo prebuild --platform ios --no-clean",
+    "native:android": "expo prebuild --platform android --no-clean",
+    "native:ios": "APP_VARIANT=development expo prebuild --platform ios --no-clean",
     "android": "bun scripts/run-android.ts",
     "adb:reverse": "bun scripts/adb-reverse.ts",
     "android:dev": "bun scripts/run-android.ts -v dev",

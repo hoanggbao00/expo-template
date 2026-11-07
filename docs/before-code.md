@@ -6,7 +6,7 @@
 4. Decide ownership before coding:
    - screen-only UI → `src/screens/<name>/components/`
    - shared UI → `src/components/`
-   - server data → `src/features/<feature-name>.{api,query,mutation,query-key}.ts`
+   - server data → `src/features/<feature-name>/api/<feature-name>.{api,queries,mutation,query-key}.ts`
    - client state → `src/state/`
 5. Add translation keys to both `src/i18n/locales/en.json` and `src/i18n/locales/vi.json`.
 6. Use Expo SDK 58 docs for Expo APIs.
